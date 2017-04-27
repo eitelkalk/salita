@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="de" manifest="cache.appcache">
+<head>
+	<meta charset="utf-8">
+	<title>Salita</title>
+
+	<link href="resources/css/main.css" rel="stylesheet" type="text/css">
+	<link rel="shortcut icon" href="resources/images/favicon.ico">
+
+</head>
+<body>
+	<div class="toolbar">
+		<ul>
+			<li><a class="toolbar-button active-button", onclick="show(this, 'map')">K</a></li>
+			<li><a class="toolbar-button", onclick="show(this, 'build')">B</a></li>
+			<li><a class="toolbar-button", onclick="show(this, 'market')">M</a></li>
+			<li><a class="toolbar-button", onclick="show(this, 'family')">F</a></li>
+		</ul>
+	</div>
+
+	<div class="container", id="map">
+		<div class="content-map">
+			Karte
+		</div>
+	</div>
+		
+	<div class="container", id="build">
+		<div class="content-build">
+			<div class="building">
+				Mühle
+			</div>
+		</div>
+	</div>
+		
+	<div class="container", id="market">
+		<div class="content-market">
+			<div class="product">
+				Holz: 
+				<input id="in-wood", type="number">
+				Stück für <strong id="wood-cost">100</strong> Gold
+				<a class="buy", onclick="buy('wood', 1)">Kaufen</a>
+				<a class="sell", onclick="buy('wood', -1)">Verkaufen</a>
+			</div>
+		</div>
+	</div>
+		
+	<div class="container", id="family">
+		<div class="content-family">
+			Familie
+		</div>
+	</div>
+  
+	<div class="footer-wrapper-logger">
+		<div class="footer-logger">
+			<p>Das wird ein Logger, wo alles drinsteht, das passiert. Auch, wenn es richtig viel ist.</p>
+			<p>Event</p>
+			<p>Event</p>
+			<p>Event</p>
+			<p>Event</p>
+			<p>Event</p>
+			<p>Event</p>
+		</div>
+	</div>
+	<div class="footer-wrapper-resources">
+		<div class="footer-resources">
+			<div id="res-wood" class="resource">Holz: 0</div>
+			<div class="resource">Stein: 0</div>
+			<div class="resource">Holz: 0</div>
+			<div class="resource">Holz: 0</div>
+			<div class="resource">Holz: 0</div>
+			<div class="resource">Holz: 0</div>
+		</div>
+	</div>
+	
+	<script src="resources/js/toolbar.js"></script>
+</body>
+</html>

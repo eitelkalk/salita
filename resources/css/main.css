@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css?family=Lusitana');
+html, body {
+	margin: 0;
+	padding: 0;
+	background: #faf8ef;
+	color: #776e65;
+	font-family: "Lusitana", "Times New Roman", Times, serif;
+	font-size: 12pt; }
+
+p {
+	margin: 0;
+	line-height: 1.65;
+}
+
+a {
+	color: #776e65;
+	font-weight: bold;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.container {
+	width: calc(100% - 50px);
+	margin-left: 50px;
+	height: 85%;
+	position: fixed;
+	top: 0;
+}
+
+#map {
+	display: block;
+}
+
+#build {
+	overflow: auto;
+	display: none;
+}
+
+#market {
+	overflow: auto;
+	display: none;
+}
+
+#family {
+	overflow: auto;
+	display: none;
+}
+
+.content-map{
+	width: 100%;
+}
+
+.content-build{
+	width: 100%;
+	overflow: hidden;
+}
+
+.content-market{
+	width: 100%;
+}
+
+.content-family{
+	width: 100%;
+	overflow: hidden;
+}
+
+.toolbar ul{
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 50px;
+    background-color: #d8d4d0;
+    position: fixed;
+    overflow: auto;
+	font-size: 16pt;
+}
+
+.toolbar li a {
+	display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.toolbar li a:hover {
+    background-color: #555;
+    color: white;
+}
+
+.active-button {
+	background-color: #999;
+}
+
+.footer-wrapper-logger{
+	margin: 0;
+	padding: 0;
+	height: 15%;
+	width: 50%;
+	position: fixed;
+	float: left;
+	bottom: 0;
+	background-color: #555;
+	color: white;
+	font-size: 12pt;
+	overflow: auto;
+}
+
+.footer-logger {
+	padding: 5px 5px 5px 5px;
+	float: left;
+	width: calc(100% - 20px);
+	overflow: hidden;
+}
+
+.footer-wrapper-resources{
+	margin: 0;
+	padding: 0;
+	height: 15%;
+	width: 50%;
+	position: fixed;
+	bottom: 0;
+	right:0;
+	background-color: #555;
+	color: white;
+	font-size: 12pt;
+	overflow: auto;
+}
+
+.footer-resources {
+	padding: 5px 5px 5px 5px;
+	width: calc(100% - 20px);
+	overflow: hidden;
+}
+
+.resource {
+	border-radius: 5px;
+	background-color: #776e65;
+	color: white;
+	float: left;
+	padding: 2px;
+	margin: 2px;
+	width: 100px;
+}
+
+.building {
+	background-color: #776e65;
+	color: white;
+	float: left;
+	padding: 5px;
+	margin: 5px;
+	width: 150px;
+	height: 200px;
+}
+
+.product {
+	margin: 5px;
+	padding: 5px;
+}
+
+.product a {
+	display: inline;
+	background-color: #776e65;
+    color: white;
+    margin: 5px;
+	padding: 5px;
+    text-decoration: none;
+}
+
+.product input {
+	width: 100px;
+}
