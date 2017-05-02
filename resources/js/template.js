@@ -41,6 +41,21 @@ var RESOURCES = [
 	{"name" : "gold", "text" : "Gold"}
 ];
 
+for (var i = 0; i < BUILDINGS.length; i++) {
+	var costs = BUILDINGS[i].costs;
+	for (var j = 0; j < costs.length; j++) {
+		var cost = costs[j];
+		cost.text = (function (name) {
+			for (var index = 0; index < RESOURCES.length; index++) {
+				var res = RESOURCES[index];
+				if (res.name == name) {
+					return res.text;
+				}
+			}
+		})(cost.name);
+	}
+}
+
 var YEAR = 300;
 var MONTH = 30;
 

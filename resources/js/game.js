@@ -17,7 +17,6 @@
 			for (var index = 0; index < costs.length; index++) {
 				builder.reduce(costs[index]);
 			}
-			console.log(time);
 			builder.applyTime(time);
 			map.set(building, i, j);
 			this.view.log(building.text + " gebaut.");

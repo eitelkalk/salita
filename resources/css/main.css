@@ -157,6 +157,14 @@ a {
     text-decoration: none;
 }
 
+.building-title {
+	font-size: 14pt;
+}
+
+.building-cost {
+	margin-left: 5px;
+}
+
 .product {
 	margin: 5px;
 	padding: 5px;

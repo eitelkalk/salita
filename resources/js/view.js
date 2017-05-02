@@ -3,8 +3,6 @@
 	this.x = 0;
 	this.y = 0;
 	
-	this.SPEED = 256;
-	
 	this.move = function (dirx, diry) {
 		// move camera
 		var delta = this.tileSize; 
@@ -86,15 +84,42 @@
 		var buildable = [];
 		for (var i = 0; i < buildings.length; i++) {
 			var building = buildings[i];
-			var div = document.createElement("div");
-			div.className = "building";
-			div.innerHTML = building.text + '<a id="build-' + building.name + '", class="build">Bauen</a></div>';
+			var div = this.createBuildingDiv(building);
 			motherDiv.appendChild(div);
 			buildable[i] = model.canBeBuiltByPlayer(building);
 		}
 		
 		var buttons = document.getElementsByClassName("build");
 		this.addOnClickEvents(buttons, buildable, buildings.map(function(b) {return b.name;}));
+	}
+	
+	this.createBuildingDiv = function (building) {
+		var div = document.createElement("div");
+		div.className = "building";
+		var title = document.createElement("div");
+		title.className = "building-title";
+		title.innerHTML = building.text;
+		div.appendChild(title);
+		
+		var time = document.createElement("div");
+		time.className = "building-cost";
+		time.innerHTML = "Zeit: " + building.time;
+		div.appendChild(time);
+		
+		for (var i = 0; i < building.costs.length; i++) {
+			var cost = building.costs[i];
+			var costDiv = document.createElement("div");
+			costDiv.className = "building-cost";
+			costDiv.innerHTML = cost.text + ": " + cost.value;
+			div.appendChild(costDiv);
+		}
+		
+		var button = document.createElement("a");
+		button.id = "build-" + building.name;
+		button.className = "build";
+		button.innerHTML = "Bauen";
+		div.appendChild(button);
+		return div;
 	}
 	
 	this.addOnClickEvents = function (buttons, enabled, buildingNames) {
