@@ -8,25 +8,19 @@ game.start();
 //bind gui actions to game
 
 function build(name) {
-	//TODO
 	var button = document.getElementById('map-button');
 	show(button, 'mapdiv');
 	game.queuedBuilding = name;
 }
 
 //TODO
-function buy(id, multi) {
-	var cost = document.getElementById(id + '-cost').value;
-	var div = document.getElementById('res-' + id);
-	var text = div.innerHTML.split(": ");
-	var name = text[0];
-	var value = parseInt(text[1], 10);
-	var increment = document.getElementById('in-' + id).value;
-	value += multi*increment;
-	div.innerHTML = name + ": " + value;
+function buy(product, multi) {
+	var value = Math.floor(document.getElementById('in-' + product.name).value);
+	game.buy(product, multi*value, model.getPlayerFamily());
+}
+
+function fireProductChanged(product, value) {
 	
-	//TODO separate model view
-	//TODO 0 lower bound
 }
 
 

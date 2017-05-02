@@ -1,6 +1,7 @@
 ﻿function Game(model, view) {
 	this.model = model;
 	this.view = view;
+	
 	this.queuedBuilding = "";
 	
 	this.build = function (building, i, j, builder) {
@@ -22,6 +23,37 @@
 			this.view.log(building.text + " gebaut.");
 		}
 		this.view.update(this.model);
+	}
+	
+	this.buy = function (product, amount, buyer) {
+		var canBuy = true;
+		var multipliedCosts = this.multiplyCosts(product.costs, amount);
+		for (var i = 0; i < multipliedCosts.length; i++) {
+			if (!buyer.hasEnough(multipliedCosts[i])) {
+				canBuy = false;
+			}
+		}
+		if (canBuy) {
+			for (var i = 0; i < multipliedCosts.length; i++) {
+				buyer.reduce(multipliedCosts[i]);
+			}
+			buyer.applyTime(product.time * amount);
+			buyer.augment(product.name, amount);
+		}
+		this.view.update(this.model);
+	}
+	
+	this.multiplyCosts = function (costs, multi) {
+		var multipliedCosts = [];
+		for (var i = 0; i < costs.length; i++) {
+			var cost = costs[i];
+			var multipliedCost = {};
+			multipliedCost.name = cost.name;
+			multipliedCost.value = cost.value * multi;
+			multipliedCost.text = cost.text;
+			multipliedCosts[i] = multipliedCost;
+		}
+		return multipliedCosts;
 	}
 	
 	this.start = function () {

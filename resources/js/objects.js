@@ -12,6 +12,10 @@ function Person(family) {
 		this.family.reduce(cost);
 	}
 	
+	this.augment = function (name, value) {
+		this.family.augment(name, value);
+	}
+	
 	this.applyTime = function (time) {
 		this.age += time;
 		if (this.age >= this.maxAge) {
@@ -40,6 +44,11 @@ function Family(startResources, startTime, city) {
 	this.reduce = function (cost) {
 		var res = this.findResource(cost.name);
 		res.changeValue(-1*cost.value);
+	}
+	
+	this.augment = function (name, value) {
+		var res = this.findResource(name);
+		res.changeValue(value);
 	}
 	
 	this.findResource = function (name) {
@@ -102,6 +111,10 @@ function City(name) {
 		//TODO
 	}
 	
+	this.augment = function (name, value) {
+		//TODO
+	}
+	
 	this.applyTime = function (time) {
 		this.updateFamilyPowers();
 		for (family in this.families) {
@@ -140,6 +153,8 @@ function Resource(name, text, value) {
 	this.copyData = function (that) {
 		this.name = that.name;
 		this.text = that.text;
+		this.time = that.time;
+		this.costs = that.costs;
 	}
 }
 

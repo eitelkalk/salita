@@ -41,18 +41,33 @@ var RESOURCES = [
 	{"name" : "gold", "text" : "Gold"}
 ];
 
+var MARKET = [];
+for (var i = 0; i < RESOURCES.length; i++) {
+	var res = RESOURCES[i];
+	if (res.name !== "gold") {
+		var p = {};
+		p.name = res.name;
+		p.text = res.text;
+		p.time = Math.floor(Math.random() * 10 + 1);
+		p.costs = [{"name" : "gold", "value" : 10, "text" : "Gold"}];
+		MARKET.push(p);
+	}
+}
+
 for (var i = 0; i < BUILDINGS.length; i++) {
 	var costs = BUILDINGS[i].costs;
 	for (var j = 0; j < costs.length; j++) {
 		var cost = costs[j];
-		cost.text = (function (name) {
-			for (var index = 0; index < RESOURCES.length; index++) {
-				var res = RESOURCES[index];
-				if (res.name == name) {
-					return res.text;
-				}
-			}
-		})(cost.name);
+		cost.text = findResource(cost.name).text;
+	}
+}
+
+function findResource(name) {
+	for (var index = 0; index < RESOURCES.length; index++) {
+		var res = RESOURCES[index];
+		if (res.name == name) {
+			return res;
+		}
 	}
 }
 

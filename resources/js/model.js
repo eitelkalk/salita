@@ -26,6 +26,7 @@
 		this.families = START_FAMILIES;
 		this.buildings = START_BUILDINGS;
 		this.persons = START_PERSONS;
+		this.market = MARKET;
 	}
 	
 	this.canBeBuiltByPlayer = function (building) {

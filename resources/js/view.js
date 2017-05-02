@@ -143,6 +143,7 @@
 		this.drawMap(model.map);
 		this.drawResources(model.getPlayerFamily().resources, model.getPlayerFamily().time, model.city.time);
 		this.drawBuildingScreen(BUILDINGS, model);
+		this.drawMarket(model.market);
 		//TODO changeResources, buttons etc.
 	}
 	
@@ -173,29 +174,69 @@
 	}
 	
 	this.format = function (time) {
-		var years = time / YEAR;
-		var months = (time - years * YEAR ) / MONTH;
+		var years = Math.floor(time / YEAR);
+		var months = Math.floor((time - years * YEAR ) / MONTH);
 		var days = (time - years * YEAR - months * MONTH);
 		var text = "";
 		if (years > 0) {
 			text += years + "&nbsp;Jahr"
-			if (years > 1) {
-				text += "e ";
-			}
+			text += years > 1 ? "e " : " ";
 		}
 		if (months > 0) {
-			text += months + "&nbsp;Monat "
-			if (years > 1) {
-				text += "e ";
-			}
+			text += months + "&nbsp;Monat"
+			text += months > 1 ? "e " : " ";
 		}
 		if (years + months == 0 || days > 0) {
 			text += days + "&nbsp;Tag"
-			if (days !== 1) {
-				text += "e";
-			}
+			text += days !== 1 ? "e" : "";
 		}
 		return text;
+	}
+	
+	this.drawMarket = function (products) {
+		var motherDiv = document.getElementById("content-market");
+		motherDiv.innerHTML = "";
+		for (var i = 0; i < products.length; i++) {
+			var product = products[i];
+			if (product.name !== "gold") {
+				var div = this.createMarketProduct(product);
+				motherDiv.appendChild(div);
+			}
+		}
+	}
+	
+	this.createMarketProduct = function (product) {
+		var div = document.createElement("div");
+		div.className = "product";
+		div.appendChild(document.createTextNode(product.text + ": "));
+		var field = document.createElement("input");
+		field.id = "in-" + product.name;
+		field.type = "number";
+		field.value = "1";
+		field.min = "0";
+		field.step = "1";
+		field.oninput = function () {
+			fireProductChanged(product, field.value);
+		};
+		div.appendChild(field);
+		div.appendChild(document.createTextNode(" für je "));
+		for (var i = 0; i < product.costs.length; i++) {
+			//TODO
+			div.appendChild(document.createTextNode(product.costs[i].value + " "));
+			div.appendChild(document.createTextNode(product.costs[i].text));
+		}
+		div.appendChild(document.createTextNode(" und " + product.time + " Zeit"));
+		var b = document.createElement("a");
+		b.className = "buy";
+		b.innerHTML = "Kaufen";
+		b.onclick = function () { buy(product, 1); };
+		div.appendChild(b);
+		var sell = document.createElement("a");
+		sell.className = "sell";
+		sell.innerHTML = "Verkaufen";
+		sell.onclick = function () { buy(product, -1); };
+		div.appendChild(sell);
+		return div;
 	}
 }
 
