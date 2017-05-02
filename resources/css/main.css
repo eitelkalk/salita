@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Lusitana');
+﻿@import url('https://fonts.googleapis.com/css?family=Lusitana');
 html, body {
 	margin: 0;
 	padding: 0;
@@ -27,7 +27,7 @@ a {
 	top: 0;
 }
 
-#map {
+#mapdiv {
 	display: block;
 }
 
@@ -44,10 +44,6 @@ a {
 #family {
 	overflow: auto;
 	display: none;
-}
-
-.content-map{
-	width: 100%;
 }
 
 .content-build{
@@ -150,6 +146,15 @@ a {
 	margin: 5px;
 	width: 150px;
 	height: 200px;
+}
+
+.building a {
+	display: block;
+	background-color: #555;
+    color: white;
+    margin: 5px;
+	padding: 5px;
+    text-decoration: none;
 }
 
 .product {
