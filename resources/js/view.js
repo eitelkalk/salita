@@ -32,7 +32,7 @@
 	}
 	
 	this.drawMap = function(map) {
-		var surroundingDiv = document.getElementById("mapdiv");
+		var surroundingDiv = document.getElementById("map-div");
 		var canvas = document.getElementById("map");
 		var context = canvas.getContext("2d");
 		canvas.width = surroundingDiv.offsetWidth;
@@ -222,10 +222,10 @@
 		div.appendChild(document.createTextNode(" für je "));
 		for (var i = 0; i < product.costs.length; i++) {
 			//TODO
-			div.appendChild(document.createTextNode(product.costs[i].value + " "));
-			div.appendChild(document.createTextNode(product.costs[i].text));
+			div.innerHTML += product.costs[i].value + "&nbsp;";
+			div.innerHTML += product.costs[i].text;
 		}
-		div.appendChild(document.createTextNode(" und " + product.time + " Zeit"));
+		div.innerHTML += " und " + product.time + "&nbsp;Zeit";
 		var b = document.createElement("a");
 		b.className = "buy";
 		b.innerHTML = "Kaufen";
@@ -238,20 +238,20 @@
 		div.appendChild(sell);
 		return div;
 	}
-}
-
-function show(button, id) {
-	var divs = document.getElementsByClassName("container");
-	var div = document.getElementById(id);
-	var i;
-	for (i = 0; i < divs.length; i++) {
-		divs[i].style.display = "none";
-	}
-	div.style.display = "block";
 	
-	tablinks = document.getElementsByClassName("toolbar-button");
-	for (i = 0; i < tablinks.length; i++) {
-		tablinks[i].className = tablinks[i].className.replace(" active-button", "");
+	this.showContent = function (button) {
+		var divs = document.getElementsByClassName("container");
+		var id = button.id.replace("-button", "-div");
+		var div = document.getElementById(id);
+		for (var i = 0; i < divs.length; i++) {
+			divs[i].style.display = "none";
+		}
+		div.style.display = "block";
+		
+		tablinks = document.getElementsByClassName("toolbar-button");
+		for (var i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" active-button", "");
+		}
+		button.className += " active-button";
 	}
-	button.className += " active-button";
 }

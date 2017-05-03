@@ -38,6 +38,7 @@ var BUILDINGS = [
 
 var RESOURCES = [
 	{"name" : "wood", "text" : "Holz"},
+	{"name" : "stone", "text" : "Super dicker Stein"},
 	{"name" : "gold", "text" : "Gold"}
 ];
 

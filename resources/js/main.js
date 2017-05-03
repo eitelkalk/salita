@@ -23,6 +23,9 @@ function fireProductChanged(product, value) {
 	
 }
 
+function showContent(button) {
+	game.showContent(button);
+}
 
 //bind keyboard actions to game
 var Keyboard = {};
@@ -32,21 +35,10 @@ Keyboard.RIGHT = [39, 68];
 Keyboard.UP    = [38, 87];
 Keyboard.DOWN  = [40, 83];
 
-Keyboard.left = function (key) {
-	return Keyboard.LEFT.indexOf(key) !== -1;
-}
-
-Keyboard.right = function (key) {
-	return Keyboard.RIGHT.indexOf(key) !== -1;
-}
-
-Keyboard.up = function (key) {
-	return Keyboard.UP.indexOf(key) !== -1;
-}
-
-Keyboard.down = function (key) {
-	return Keyboard.DOWN.indexOf(key) !== -1;
-}
+Keyboard.left  = function (key) { return Keyboard.LEFT.indexOf(key)  !== -1; }
+Keyboard.right = function (key) { return Keyboard.RIGHT.indexOf(key) !== -1; }
+Keyboard.up    = function (key) { return Keyboard.UP.indexOf(key)    !== -1; }
+Keyboard.down  = function (key) { return Keyboard.DOWN.indexOf(key)  !== -1; }
 
 function move(event) {
 	var dirx = 0;

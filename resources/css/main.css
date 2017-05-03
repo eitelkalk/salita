@@ -19,6 +19,10 @@ a {
 	cursor: pointer;
 }
 
+input[type=number] {
+	text-align: right;
+}
+
 .container {
 	width: 100%;
 	height: calc(100% - 200px);
@@ -36,6 +40,7 @@ a {
 }
 
 #market {
+	text-align: center;
 	overflow: auto;
 	display: none;
 }
@@ -51,7 +56,8 @@ a {
 }
 
 .content-market{
-	width: 100%;
+	display: inline-block;
+	text-align: right;
 }
 
 .content-family{
@@ -170,8 +176,8 @@ a {
 }
 
 .product {
-	margin: 5px;
-	padding: 5px;
+	margin-top: 10px;
+	line-height: 1.8;
 }
 
 .product a {
@@ -184,5 +190,5 @@ a {
 }
 
 .product input {
-	width: 100px;
+	width: 50px;
 }

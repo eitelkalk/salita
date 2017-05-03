@@ -59,12 +59,30 @@
 	}
 	
 	this.start = function () {
+		this.registerButtonActions();
 		this.model.init();
+		this.showContent(document.getElementById("map-button"));
 		this.view.update(this.model);
 	}
 	
 	this.log = function (event) {
 		this.model.log(event);
 		this.view.log(event);
+	}
+	
+	this.registerButtonActions = function() {
+		var buttons = document.getElementsByClassName("toolbar-button");
+		for (var i = 0; i < buttons.length; i++) {
+			(function (index) {
+				buttons[index].onclick = function() {
+					showContent(buttons[index]);
+				}
+			})(i);
+		}
+	}
+	
+	this.showContent = function (button) {
+		this.view.showContent(button);
+		this.view.update(this.model);
 	}
 }
