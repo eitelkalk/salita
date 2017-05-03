@@ -1,5 +1,7 @@
 ﻿function Model() {
 	this.map = new Map(30, 25);
+	this.logger = [];
+	this.LOG_HISTORY = 100;
 	
 	this.getPlayerFamily = function () {
 		return this.families[0];
@@ -38,5 +40,12 @@
 			}
 		}
 		return canBuild;
+	}
+	
+	this.log = function (event) {
+		this.logger.unshift(event);
+		while (this.logger.length > this.LOG_HISTORY) {
+			this.logger.pop();
+		}
 	}
 }

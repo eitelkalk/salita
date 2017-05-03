@@ -5,7 +5,7 @@
 	
 	this.move = function (dirx, diry) {
 		// move camera
-		var delta = this.tileSize; 
+		var delta = 2 * this.tileSize; 
 		this.x += dirx * delta;
 		this.y += diry * delta;
 		// clamp values

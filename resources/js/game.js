@@ -1,6 +1,7 @@
 ﻿function Game(model, view) {
 	this.model = model;
 	this.view = view;
+	this.model.controller = this;
 	
 	this.queuedBuilding = "";
 	
@@ -40,6 +41,7 @@
 			buyer.applyTime(product.time * amount);
 			buyer.augment(product.name, amount);
 		}
+		this.log(Math.abs(amount) + " " + product.text + " am Markt " + (amount >= 0 ? "ge" : "ver") + "kauft.");
 		this.view.update(this.model);
 	}
 	
@@ -62,7 +64,7 @@
 	}
 	
 	this.log = function (event) {
-		//TODO model.log
+		this.model.log(event);
 		this.view.log(event);
 	}
 }
