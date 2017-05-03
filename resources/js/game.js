@@ -7,7 +7,7 @@
 	
 	this.build = function (building, i, j, builder) {
 		var map = this.model.map;
-		var canBuild = map.isEmpty(i, j);
+		var canBuild = map.isEmpty(i, j) && builder.hasEnoughTime();
 		var costs = building.costs;
 		var time = building.time;
 		for (var index = 0; index < costs.length; index++) {
@@ -21,7 +21,7 @@
 			}
 			builder.applyTime(time);
 			map.set(building, i, j);
-			this.view.log(building.text + " gebaut.");
+			this.model.log(building.text + " gebaut.");
 		}
 		this.view.update(this.model);
 	}
@@ -41,7 +41,7 @@
 			buyer.applyTime(product.time * amount);
 			buyer.augment(product.name, amount);
 		}
-		this.log(Math.abs(amount) + " " + product.text + " am Markt " + (amount >= 0 ? "ge" : "ver") + "kauft.");
+		this.model.log(Math.abs(amount) + " " + product.text + " am Markt " + (amount >= 0 ? "ge" : "ver") + "kauft.");
 		this.view.update(this.model);
 	}
 	
@@ -65,8 +65,7 @@
 		this.view.update(this.model);
 	}
 	
-	this.log = function (event) {
-		this.model.log(event);
+	this.eventLogged = function (event) {
 		this.view.log(event);
 	}
 	
@@ -83,6 +82,10 @@
 	
 	this.showContent = function (button) {
 		this.view.showContent(button);
+		this.view.update(this.model);
+	}
+	
+	this.update = function () {
 		this.view.update(this.model);
 	}
 }

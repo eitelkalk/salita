@@ -8,9 +8,8 @@
 	}
 	
 	this.getNewBuilding = function (name) {
-		var i;
 		var build;
-		for (i = 0; i < BUILDINGS.length; i++) {
+		for (var i = 0; i < BUILDINGS.length; i++) {
 			if ( BUILDINGS[i].name == name) {
 				build = BUILDINGS[i];
 				break;
@@ -26,6 +25,9 @@
 		//TODO load stored data
 		this.city = START_CITY;
 		this.families = START_FAMILIES;
+		for (var i = 0; i < this.families.length; i++) {
+			this.families[i].model = this;
+		}
 		this.buildings = START_BUILDINGS;
 		this.persons = START_PERSONS;
 		this.market = MARKET;
@@ -47,5 +49,6 @@
 		while (this.logger.length > this.LOG_HISTORY) {
 			this.logger.pop();
 		}
+		this.controller.eventLogged(event);
 	}
 }

@@ -19,10 +19,6 @@ a {
 	cursor: pointer;
 }
 
-input[type=number] {
-	text-align: right;
-}
-
 .container {
 	width: 100%;
 	height: calc(100% - 200px);
@@ -30,22 +26,22 @@ input[type=number] {
 	top: 0;
 }
 
-#mapdiv {
+#map-div {
 	display: block;
 }
 
-#build {
+#build-div {
 	overflow: auto;
 	display: none;
 }
 
-#market {
+#market-div {
 	text-align: center;
 	overflow: auto;
 	display: none;
 }
 
-#family {
+#family-div {
 	overflow: auto;
 	display: none;
 }
@@ -191,4 +187,26 @@ input[type=number] {
 
 .product input {
 	width: 50px;
+	text-align: right;
+}
+
+.person {
+	line-height: 30px;
+}
+
+.person a {
+	margin: 5px;
+	line-height: 20px;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	background-color: #776e65;
+	color: white;
+	text-decoration: none;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.person-info {
+	margin-left: 30px;
 }

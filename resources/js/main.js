@@ -9,7 +9,7 @@ game.start();
 
 function build(name) {
 	var button = document.getElementById('map-button');
-	show(button, 'mapdiv');
+	showContent(button);
 	game.queuedBuilding = name;
 }
 
@@ -25,6 +25,18 @@ function fireProductChanged(product, value) {
 
 function showContent(button) {
 	game.showContent(button);
+}
+
+function showHide(button) {
+	var div = document.getElementById("info-" + button.id.replace("button-", ""));
+	var isCollapsed = div.style.display == "none";
+	if (isCollapsed) {
+		div.style.display = "block";
+		button.innerHTML = "-";
+	} else {
+		div.style.display = "none";
+		button.innerHTML = "+";
+	}
 }
 
 //bind keyboard actions to game

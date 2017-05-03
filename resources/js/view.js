@@ -13,6 +13,16 @@
 		this.y = Math.max(0, Math.min(this.y, this.maxY));
 	};
 	
+	this.update = function (model) {
+		this.drawMap(model.map);
+		this.drawResources(model.getPlayerFamily().resources, model.getPlayerFamily().time, model.city.time);
+		this.drawBuildingScreen(BUILDINGS, model);
+		this.drawMarket(model.market);
+		this.drawPersons(model.getPlayerFamily().familyMembers);
+		
+		//TODO changeResources, buttons etc.
+	}
+	
 	this.updateSize = function (mapWidth, mapHeight, width, height) {
 		this.maxX = mapWidth * this.tileSize - width;
 		this.maxY = mapHeight * this.tileSize - height;
@@ -139,14 +149,6 @@
 		}
 	}
 	
-	this.update = function (model) {
-		this.drawMap(model.map);
-		this.drawResources(model.getPlayerFamily().resources, model.getPlayerFamily().time, model.city.time);
-		this.drawBuildingScreen(BUILDINGS, model);
-		this.drawMarket(model.market);
-		//TODO changeResources, buttons etc.
-	}
-	
 	this.drawResources = function (resources, familyTime, cityTime) {
 		var motherDiv = document.getElementById("resources");
 		motherDiv.innerHTML = "";
@@ -171,6 +173,60 @@
 		timeDiv.className = 'resource';
 		timeDiv.innerHTML = "Stadtalter: " + this.format(cityTime);
 		motherDiv.appendChild(timeDiv);
+	}
+	
+	this.drawPersons = function (persons) {
+		var div = document.getElementById("content-family");
+		div.innerHTML = "";
+		for (var i = 0; i < persons.length; i++) {
+			div.appendChild(this.createPersonDiv(persons[i]));
+		}
+		
+		var buttons = document.getElementsByClassName("person-show-hide-button");
+		this.addShowHideFunctionalityTo(buttons);
+	}
+	
+	this.addShowHideFunctionalityTo = function (buttons) {
+		for (var i = 0; i < buttons.length; i++) {
+			(function (index) {
+				var button = buttons[index];
+				button.onclick = function() {
+					showHide(button);
+				}
+			})(i);
+		}
+	}
+	
+	this.createPersonDiv = function (person) {
+		var div = document.createElement("div");
+		div.id = "person-" + person.id;
+		div.className = "person";
+		var button = document.createElement("a");
+		button.id = "button-" + person.id;
+		button.className = "person-show-hide-button";
+		button.innerHTML = "+";
+		div.appendChild(button);
+		div.innerHTML += person.name;
+		var info = this.createPersonInfo(person);
+		div.appendChild(info);
+		return div;
+	}
+	
+	this.createPersonInfo = function (person) {
+		var div = document.createElement("div");
+		div.style.display = "none";
+		div.id = "info-" + person.id;
+		div.className = "person-info";
+		div.appendChild(this.createPersonData("Alter", this.format(person.age)));
+		div.appendChild(this.createPersonData("Geschlecht", person.genderText));
+		return div;
+	}
+	
+	this.createPersonData = function (name, value) {
+		var div = document.createElement("div");
+		div.style.display = "block";
+		div.innerHTML = name + ": " + value;
+		return div;
 	}
 	
 	this.format = function (time) {
@@ -212,20 +268,23 @@
 		var field = document.createElement("input");
 		field.id = "in-" + product.name;
 		field.type = "number";
-		field.value = "1";
 		field.min = "0";
 		field.step = "1";
+		field.value = "1";
 		field.oninput = function () {
 			fireProductChanged(product, field.value);
 		};
 		div.appendChild(field);
-		div.appendChild(document.createTextNode(" für je "));
+		var costText = " für je ";
 		for (var i = 0; i < product.costs.length; i++) {
 			//TODO
-			div.innerHTML += product.costs[i].value + "&nbsp;";
-			div.innerHTML += product.costs[i].text;
+			costText += product.costs[i].value + "&nbsp;";
+			costText += product.costs[i].text;
 		}
-		div.innerHTML += " und " + product.time + "&nbsp;Zeit";
+		costText += " und " + product.time + "&nbsp;Zeit";
+		var costs = document.createElement("span");
+		costs.innerHTML = costText;
+		div.appendChild(costs);
 		var b = document.createElement("a");
 		b.className = "buy";
 		b.innerHTML = "Kaufen";

@@ -1,8 +1,6 @@
 function Person(family) {
 	this.family = family;
 	this.family.addPerson(this);
-	this.age = 0; //TODO start
-	this.maxAge = 300; //TODO start
 	
 	this.hasEnough = function (cost) {
 		return this.family.hasEnough(cost);
@@ -27,6 +25,10 @@ function Person(family) {
 	this.die = function () {
 		this.family.dies(this);
 	}
+	
+	this.hasEnoughTime = function () {
+		return this.maxAge >= this.age;
+	}
 }
 
 function Family(startResources, startTime, city) {
@@ -35,10 +37,16 @@ function Family(startResources, startTime, city) {
 	this.city = city;
 	this.familyMembers = [];
 	this.city.addFamily(this);
+	this.willDie = [];
+	this.canDie = true;
 	
 	this.hasEnough = function (cost) {
 		var res = this.findResource(cost.name);
 		return res.value >= cost.value;
+	}
+	
+	this.hasEnoughTime = function () {
+		return this.familyMembers.length > this.willDie;
 	}
 	
 	this.reduce = function (cost) {
@@ -62,12 +70,23 @@ function Family(startResources, startTime, city) {
 	}
 	
 	this.applyTime = function (time) {
+		this.canDie = false;
 		var l = this.familyMembers.length;
 		var personalTime = this.splitRandomly(time, this.familyMembers.length);
 		for (var i = 0; i < this.familyMembers.length; i++) {
-			this.familyMembers[i].applyTime(personalTime[i]);
+			this.familyMembers[i].applyTime(personalTime[i]); //TODO members die meanwhile and change array
 		}
+		this.canDie = true;
+		this.letMyPeopleGo();
 		this.city.time += time;
+	}
+	
+	this.sum = function (array) {
+		var s = 0;
+		for (var i = 0; i < array.length; i++) {
+			s += array[i];
+		}
+		return s;
 	}
 	
 	this.splitRandomly = function (number, parts) {
@@ -86,9 +105,21 @@ function Family(startResources, startTime, city) {
 		return splitted;
 	}
 	
+	this.letMyPeopleGo = function () {
+		while (this.willDie.length > 0) {
+			var iDieNow = this.willDie.pop();
+			var index = this.familyMembers.indexOf(iDieNow);
+			this.familyMembers.splice(index, 1);
+			this.model.log(iDieNow.name + selectRandomlyFrom(DIE_TEXTS));			
+		}
+		//TODO check if family is alive
+	}
+	
 	this.dies = function (person) {
-		var index = this.familyMembers.indexOf(person);
-		this.familyMembers.splice(index, 1);
+		this.willDie.push(person);
+		if (this.canDie) {
+			this.letMyPeopleGo();
+		}
 	}
 	
 	this.addPerson = function (person) {
@@ -103,6 +134,11 @@ function City(name) {
 	this.powerSum = 0;
 	
 	this.hasEnough = function (cost) {
+		//TODO
+		return true;
+	}
+	
+	this.hasEnoughTime = function () {
 		//TODO
 		return true;
 	}
