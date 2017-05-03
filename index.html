@@ -5,33 +5,19 @@
 	<title>Salita</title>
 
 	<link href="resources/css/main.css" rel="stylesheet" type="text/css">
-	<link rel="icon" type="image/png" href="resources/images/favicon.png">
-	
+	<link rel="icon" type="image/png" href="resources/images/favicon.png">	
 </head>
 <body>
-	<div class="toolbar">
-		<ul>
-			<li><a id="map-button", class="toolbar-button active-button", onclick="show(this, 'mapdiv')">K</a></li>
-			<li><a id="build-button", class="toolbar-button", onclick="show(this, 'build')">B</a></li>
-			<li><a id="market-button", class="toolbar-button", onclick="show(this, 'market')">M</a></li>
-			<li><a id="family-button", class="toolbar-button", onclick="show(this, 'family')">F</a></li>
-		</ul>
-	</div>
-
 	<div class="container", id="mapdiv">
-		<canvas id="map"></canvas>
+		<canvas id="map">Karte konnte nicht geladen werden</canvas>
 	</div>
 		
 	<div class="container", id="build">
-		<div id="building-container", class="content-build">
-			Keine Gebäude verfügbar.
-		</div>
+		<div id="building-container", class="content-build">Keine Gebäude verfügbar.</div>
 	</div>
 		
 	<div class="container", id="market">
-		<div id="content-market", class="content-market">
-			Markt konnte nicht geladen werden.
-		</div>
+		<div id="content-market", class="content-market">Markt konnte nicht geladen werden.</div>
 	</div>
 		
 	<div class="container", id="family">
@@ -44,9 +30,15 @@
 		<div id="logger", class="footer-logger"></div>
 	</div>
 	<div class="footer-wrapper-resources">
-		<div id="resources", class="footer-resources">
-			Ressourcen konnten nicht geladen werden.
-		</div>
+		<div id="resources", class="footer-resources">Ressourcen konnten nicht geladen werden.</div>
+	</div>
+	<div class="toolbar">
+		<ul>
+			<li><a id="map-button", class="toolbar-button active-button", onclick="show(this, 'mapdiv')">K</a></li>
+			<li><a id="build-button", class="toolbar-button", onclick="show(this, 'build')">B</a></li>
+			<li><a id="market-button", class="toolbar-button", onclick="show(this, 'market')">M</a></li>
+			<li><a id="family-button", class="toolbar-button", onclick="show(this, 'family')">F</a></li>
+		</ul>
 	</div>
 	
 	<script src="resources/js/objects.js"></script>
