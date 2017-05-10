@@ -23,6 +23,7 @@
 			map.set(building, i, j);
 			this.model.log(building.text + " gebaut.");
 		}
+		this.view.highlight = false;
 		this.view.update(this.model);
 	}
 	
@@ -56,6 +57,11 @@
 			multipliedCosts[i] = multipliedCost;
 		}
 		return multipliedCosts;
+	}
+	
+	this.zoom = function (direction, centerX, centerY) {
+		this.view.zoom(direction, centerX, centerY);
+		this.view.update(this.model);
 	}
 	
 	this.start = function () {

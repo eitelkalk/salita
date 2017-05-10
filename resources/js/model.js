@@ -1,5 +1,5 @@
 ﻿function Model() {
-	this.map = new Map(30, 25);
+	this.map = new Map(50, 25);
 	this.logger = [];
 	this.LOG_HISTORY = 100;
 	
@@ -25,12 +25,15 @@
 		//TODO load stored data
 		this.city = START_CITY;
 		this.families = START_FAMILIES;
+		this.persons = START_PERSONS;
+		this.market = MARKET;
+		
 		for (var i = 0; i < this.families.length; i++) {
 			this.families[i].model = this;
 		}
 		this.buildings = START_BUILDINGS;
-		this.persons = START_PERSONS;
-		this.market = MARKET;
+		this.city.families = this.families;
+		this.city.model = this;
 	}
 	
 	this.canBeBuiltByPlayer = function (building) {

@@ -1,17 +1,31 @@
 ﻿function View() {
-	this.tileSize = 64;
+	this.tileSize = 100;
+	this.zoomAmount = 50;
 	this.x = 0;
 	this.y = 0;
+	this.highlightX = 0;
+	this.highlightY = 0;
+	this.highlight = false;
 	
 	this.move = function (dirx, diry) {
 		// move camera
-		var delta = 2 * this.tileSize; 
+		var delta = 200; 
 		this.x += dirx * delta;
 		this.y += diry * delta;
 		// clamp values
 		this.x = Math.max(0, Math.min(this.x, this.maxX));
 		this.y = Math.max(0, Math.min(this.y, this.maxY));
 	};
+	
+	this.zoom = function (direction, centerX, centerY) {
+		var oldSize = this.tileSize;
+		var old = this.getIndizesAt(centerX, centerY);
+		this.tileSize = Math.min(400, Math.max(50, oldSize - direction * this.zoomAmount));
+		var ratio = this.tileSize / oldSize;
+		this.x = (this.x + centerX) * ratio - centerX;
+		this.y = (this.y + centerY) * ratio - centerY;
+		//TODO: totally zoomed out it does not work if screen is wider than canvas
+	}
 	
 	this.update = function (model) {
 		this.drawMap(model.map);
@@ -26,6 +40,8 @@
 	this.updateSize = function (mapWidth, mapHeight, width, height) {
 		this.maxX = mapWidth * this.tileSize - width;
 		this.maxY = mapHeight * this.tileSize - height;
+		this.x = Math.max(0, Math.min(this.x, this.maxX));
+		this.y = Math.max(0, Math.min(this.y, this.maxY));
 	}
 	
 	this.log = function(text) {
@@ -45,44 +61,46 @@
 		var surroundingDiv = document.getElementById("map-div");
 		var canvas = document.getElementById("map");
 		var context = canvas.getContext("2d");
-		canvas.width = surroundingDiv.offsetWidth;
-		canvas.height = surroundingDiv.offsetHeight;
+		canvas.width = Math.min(surroundingDiv.offsetWidth, this.tileSize * map.width);
+		canvas.height = Math.min(surroundingDiv.offsetHeight, this.tileSize * map.height);
 		
 		this.updateSize(map.width, map.height, canvas.width, canvas.height);
 		
 		context.clearRect(0,0,canvas.width,canvas.height);
 	
 		var startCol = Math.floor(this.x / this.tileSize);
-		var endCol = Math.min(startCol + (canvas.width / this.tileSize), map.width-1);
+		var endCol = Math.min(startCol + (canvas.width / this.tileSize) + 1, map.width);
 		var startRow = Math.floor(this.y / this.tileSize);
-		var endRow = Math.min(startRow + (canvas.height / this.tileSize), map.height-1);
+		var endRow = Math.min(startRow + (canvas.height / this.tileSize) + 1, map.height);
 		var offsetX = -this.x + startCol * this.tileSize;
 		var offsetY = -this.y + startRow * this.tileSize;
 
-		for (var c = startCol; c <= endCol; c++) {
-			for (var r = startRow; r <= endRow; r++) {
+		for (var c = startCol; c < endCol; c++) {
+			for (var r = startRow; r < endRow; r++) {
 				var x = (c - startCol) * this.tileSize + offsetX;
 				var y = (r - startRow) * this.tileSize + offsetY;
-				this.drawTile(context, map.get(c, r), x+1, y+1, this.tileSize-2, this.tileSize-2);
+				this.drawTile(context, map.get(c, r), x, y, this.tileSize, this.tileSize);
 			}
 		}
 	}
 	
 	this.drawTile = function (context, tile, startX, startY, width, height) {
-		//TODO display more information
-		if (tile.isEmpty()) {
-		
+		context.drawImage(Loader.getImage("background"), startX, startY, width, height);
+		context.drawImage(Loader.getImage(tile.key), startX, startY, width, height);
+		if (this.highlight && startX < this.highlightX && startX + width > this.highlightX && startY < this.highlightY && startY + width > this.highlightY) {
+			context.strokeStyle = "#000000";
+			context.strokeRect(startX, startY, width-1, height-1);
 		}
-		context.fillStyle = tile.color;
-		context.fillRect(startX, startY, width, height);
 	}
 	
-	this.getIndizesAt = function(x, y, map) {
+	this.getIndizesAt = function(x, y) {
 		var startCol = Math.floor(this.x / this.tileSize);
 		var startRow = Math.floor(this.y / this.tileSize);
 		
-		var i = startCol + Math.floor(x / this.tileSize);
-		var j = startRow + Math.floor(y / this.tileSize);
+		var offsetX = -this.x + startCol * this.tileSize;
+		var offsetY = -this.y + startRow * this.tileSize;
+		var i = startCol + Math.floor((x - offsetX) / this.tileSize);
+		var j = startRow + Math.floor((y - offsetY) / this.tileSize);
 		
 		return [i, j];
 	}
@@ -219,6 +237,18 @@
 		div.className = "person-info";
 		div.appendChild(this.createPersonData("Alter", this.format(person.age)));
 		div.appendChild(this.createPersonData("Geschlecht", person.genderText));
+		if (person.spouse == "none") {
+			var marriageButton = document.createElement("a");
+			marriageButton.innerHTML = "Verheiraten (+1 Familienmitglied)";
+			//TODO costs?
+			div.appendChild(marriageButton);
+		} else {
+			div.appendChild(this.createPersonData("Ehepartner", person.spouse.name));
+		}
+		//TODO functions and hence buttons:
+		//begetChildren
+		//educate
+		//...
 		return div;
 	}
 	

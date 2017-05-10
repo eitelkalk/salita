@@ -17,7 +17,7 @@ var BUILDINGS = [
 		"name"  : "mill",
 		"text"  : "Mühle",
 		"time"  : 300,
-		"color" : "#B22222",
+		"key"   : "Mill",
 		"costs" : [
 			{
 				"name"  : "wood", 
@@ -33,7 +33,7 @@ var BUILDINGS = [
 		"name"  : "bakery",
 		"text"  : "Bäckerei",
 		"time"  : 300,
-		"color" : "#CD5C5C",
+		"key"   : "Bakery",
 		"costs" : [
 			{
 				"name"  : "wood", 
@@ -111,11 +111,11 @@ for (var i = 0; i < NO_FAMILIES; i++) {
 		var person = new Person(START_FAMILIES[i]);
 		person.age = Math.floor(Math.random() * YEAR * 15) + 15 * YEAR;
 		person.maxAge = Math.floor(Math.random() * YEAR * 30) + 50 * YEAR;
-		person.maxAge = person.age + 1;
 		person.id = uid();
 		person.gender = Math.random() >= 0.5 ? "male" : "female";
 		person.genderText = person.gender == "male" ? "männlich" : "weiblich";
 		person.name = person.gender == "male" ? selectRandomlyFrom(MALE_NAMES) : selectRandomlyFrom(FEMALE_NAMES);
+		person.spouse = "none";
 		START_PERSONS.push();
 	}
 }

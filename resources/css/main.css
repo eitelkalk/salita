@@ -1,5 +1,6 @@
 ﻿@import url('https://fonts.googleapis.com/css?family=Lusitana');
 html, body {
+	cursor: default;
 	margin: 0;
 	padding: 0;
 	background: #faf8ef;
@@ -26,8 +27,9 @@ a {
 	top: 0;
 }
 
-#map-div {
-	display: block;
+#map-center {
+	margin: auto;
+	display: table;
 }
 
 #build-div {
@@ -209,4 +211,11 @@ a {
 
 .person-info {
 	margin-left: 30px;
+}
+
+.person-info a {
+	margin: 0;
+	width: initial;
+	border-radius: initial;
+	padding: 5px;
 }

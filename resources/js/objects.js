@@ -72,13 +72,13 @@ function Family(startResources, startTime, city) {
 	this.applyTime = function (time) {
 		this.canDie = false;
 		var l = this.familyMembers.length;
-		var personalTime = this.splitRandomly(time, this.familyMembers.length);
+		var personalTime = splitRandomly(time, this.familyMembers.length);
 		for (var i = 0; i < this.familyMembers.length; i++) {
 			this.familyMembers[i].applyTime(personalTime[i]); //TODO members die meanwhile and change array
 		}
 		this.canDie = true;
 		this.letMyPeopleGo();
-		this.city.time += time;
+		this.city.processTime(this, time);
 	}
 	
 	this.sum = function (array) {
@@ -87,22 +87,6 @@ function Family(startResources, startTime, city) {
 			s += array[i];
 		}
 		return s;
-	}
-	
-	this.splitRandomly = function (number, parts) {
-		var array = [];
-		var splitted = [];
-		var i;
-		array.push(0);
-		array.push(number);
-		for (i = 0; i < parts-1; i++) {
-			array.push(Math.floor(Math.random()*(number+1)));
-		}
-		array.sort(function(x,y){return x - y});
-		for (i = 0; i < array.length-1; i++) {
-			splitted.push(array[i+1] - array[i]);
-		}
-		return splitted;
 	}
 	
 	this.letMyPeopleGo = function () {
@@ -125,6 +109,22 @@ function Family(startResources, startTime, city) {
 	this.addPerson = function (person) {
 		this.familyMembers.push(person);
 	}
+}
+
+splitRandomly = function (number, parts) {
+	var array = [];
+	var splitted = [];
+	var i;
+	array.push(0);
+	array.push(number);
+	for (i = 0; i < parts-1; i++) {
+		array.push(Math.floor(Math.random()*(number+1)));
+	}
+	array.sort(function(x,y){return x - y});
+	for (i = 0; i < array.length-1; i++) {
+		splitted.push(array[i+1] - array[i]);
+	}
+	return splitted;
 }
 
 function City(name) {
@@ -151,6 +151,21 @@ function City(name) {
 		//TODO
 	}
 	
+	this.processTime = function (owner, time) {
+		if (owner == this.model.getPlayerFamily) {
+			var times = splitRandomly(time, this.families.length-1);
+			//TODO assumes player family is at position 0
+			for (var i = 1; i < this.families.length; i++) {
+				this.performRandomAction(this.families[i], time);
+			}
+		}
+		this.time += time;
+	}
+	
+	this.performRandomAction = function (family, time) {
+		//TODO
+	}
+	
 	this.applyTime = function (time) {
 		this.updateFamilyPowers();
 		for (family in this.families) {
@@ -173,7 +188,7 @@ function City(name) {
 	
 	this.addFamily = function (family) {
 		this.families.push(family);
-		this.updateFamilyPowers;
+		this.updateFamilyPowers();
 	}
 }
 
@@ -225,7 +240,7 @@ Map.prototype.convert = function (i, j) {
 };
 
 function EmptyCell() {
-	this.color = "#008000"; //TODO
+	this.key = "Empty0" + (Math.floor(Math.random() * 9) + 1);
 	
 	this.isEmpty = function () {
 		return true;
@@ -242,6 +257,6 @@ function Building() {
 		this.text = that.text;
 		this.costs = that.costs;
 		this.time = that.time;
-		this.color = that.color;
+		this.key = that.key;
 	}
 }

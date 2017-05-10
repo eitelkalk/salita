@@ -2,15 +2,67 @@
 var view = new View();
 var game = new Game(model, view);
 
-game.start();
+//Image loader
+var Loader = {
+    images: {}
+};
+
+Loader.loadImage = function (key, src) {
+    var img = new Image();
+	
+	var promise = new Promise(function(resolve, reject) {
+		img.onload = function () {
+			Loader.images[key] = img;
+			resolve(img);
+		};
+		img.onerror = function () {
+			reject("Image load failed: " + src);
+		};
+	
+	});
+	
+	img.src = src;
+	return promise;
+};
+
+Loader.getImage = function (key) {
+	if (key in this.images) {
+		return this.images[key];
+	} else {
+		console.log("keen Bild: " + key);
+		return null;
+	}
+    return (key in this.images) ? this.images[key] : null;
+};
+
+
+function loadImages() {
+	var promises = [];
+	promises.push(Loader.loadImage("background", "resources/images/Background.png"));
+	for (var i = 1; i < 10; i++) {
+		promises.push(Loader.loadImage("Empty0" + i, "resources/images/Empty0" + i + ".png"));
+	}
+	for (var i = 0; i < BUILDINGS.length; i++) {
+		var key = BUILDINGS[i].key;
+		console.log(key);
+		promises.push(Loader.loadImage(key, "resources/images/" + key + ".png"));
+	}
+	Promise.all(promises).then(function() {game.start()});
+}
+
+function main() {
+	loadImages();
+}
+
+main();
 
 
 //bind gui actions to game
-
 function build(name) {
 	var button = document.getElementById('map-button');
 	showContent(button);
 	game.queuedBuilding = name;
+	view.highlight = true;
 }
 
 //TODO
@@ -38,6 +90,16 @@ function showHide(button) {
 		button.innerHTML = "+";
 	}
 }
+
+function zoom(event) {
+	var rect = document.getElementById('map').getBoundingClientRect();
+	var x = event.clientX - rect.left;
+	var y = event.clientY - rect.top;
+	view.highlightX = x;
+	view.highlightY = y;
+	game.zoom(Math.max(-1, Math.min(1, event.deltaY)), x, y);
+}
+
 
 //bind keyboard actions to game
 var Keyboard = {};
@@ -81,6 +143,14 @@ document.getElementById('map').onmouseup = function(event) {
 	} else {
 		//TODO produce or assign family members or...
 	}
+}
+
+document.getElementById("map").addEventListener("wheel", zoom);
+document.getElementById("map").onmousemove = function(event) {
+	var rect = document.getElementById('map').getBoundingClientRect();
+	view.highlightX = event.clientX  - rect.left;
+	view.highlightY = event.clientY - rect.top;
+	view.drawMap(model.map);
 }
 
 //bind window events to game
