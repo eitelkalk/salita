@@ -219,3 +219,12 @@ a {
 	border-radius: initial;
 	padding: 5px;
 }
+
+#info {
+	display: none;
+	position: fixed;
+	z-index: 42;
+	background: #faf8ef;
+	color: #776e65;
+	width: 200px;
+}

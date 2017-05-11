@@ -6,6 +6,9 @@
 	this.highlightX = 0;
 	this.highlightY = 0;
 	this.highlight = false;
+	this.infoX = 0;
+	this.infoY = 0;
+	this.showInfo = false;
 	
 	this.move = function (dirx, diry) {
 		// move camera
@@ -82,15 +85,52 @@
 				this.drawTile(context, map.get(c, r), x, y, this.tileSize, this.tileSize);
 			}
 		}
+		
+		
+		var indizes = this.getIndizesAt(this.highlightX, this.highlightY);
+		var x = (indizes[0] - startCol) * this.tileSize + offsetX;
+		var y = (indizes[1] - startRow) * this.tileSize + offsetY;
+		this.drawHighlightedTile(context, x, y, this.tileSize, this.tileSize);
+		
+		var x = (this.infoX - startCol) * this.tileSize + offsetX;
+		var y = (this.infoY - startRow) * this.tileSize + offsetY;
+		this.drawInfo(x, y, this.tileSize, this.tileSize, canvas.width, canvas.height);
 	}
 	
 	this.drawTile = function (context, tile, startX, startY, width, height) {
-		context.drawImage(Loader.getImage("background"), startX, startY, width, height);
+		context.drawImage(Loader.getImage("background"), startX, startY, width+1, height+1);
 		context.drawImage(Loader.getImage(tile.key), startX, startY, width, height);
-		if (this.highlight && startX < this.highlightX && startX + width > this.highlightX && startY < this.highlightY && startY + width > this.highlightY) {
+	}
+	
+	this.drawHighlightedTile = function (context, x, y, width, height) {
+		if (this.highlight) {
 			context.strokeStyle = "#000000";
-			context.strokeRect(startX, startY, width-1, height-1);
+			context.strokeRect(x, y, width-1, height-1);
 		}
+	}
+	
+	this.drawInfo = function (x, y, width, height, maxWidth, maxHeight) {
+		var info = document.getElementById("info");
+		if (this.showInfo) {
+			info.innerHTML = "";
+			info.style.display = "block";
+			info.innerHTML = "Hier könnte Ihre Werbung stehen."; //TODO
+			var top = y - info.offsetHeight;
+			top = top < 0 ? top + this.tileSize + info.offsetHeight : top;
+			top = Math.max(0, Math.min(top, maxHeight - info.offsetHeight));
+			var left = x + width / 2 - info.offsetWidth / 2;
+			left = Math.max(0, Math.min(left, maxWidth - info.offsetWidth));
+			info.style.top = top + "px";
+			info.style.left = left + "px";
+		} else {
+			info.style.display = "none";
+		}
+	}
+	
+	this.toggleInfo = function (x, y, map) {
+		this.showInfo = !this.showInfo && !map.get(x, y).isEmpty();
+		this.infoX = x;
+		this.infoY = y;
 	}
 	
 	this.getIndizesAt = function(x, y) {

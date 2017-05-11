@@ -59,6 +59,16 @@
 		return multipliedCosts;
 	}
 	
+	this.hideInfo = function () {
+		this.view.showInfo = false;
+		this.view.update(this.model);
+	}
+	
+	this.toggleInfo = function (x, y) {
+		this.view.toggleInfo(x, y, this.model.map);
+		this.view.update(this.model);
+	}
+	
 	this.zoom = function (direction, centerX, centerY) {
 		this.view.zoom(direction, centerX, centerY);
 		this.view.update(this.model);

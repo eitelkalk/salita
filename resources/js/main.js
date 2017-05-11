@@ -44,7 +44,6 @@ function loadImages() {
 	}
 	for (var i = 0; i < BUILDINGS.length; i++) {
 		var key = BUILDINGS[i].key;
-		console.log(key);
 		promises.push(Loader.loadImage(key, "resources/images/" + key + ".png"));
 	}
 	Promise.all(promises).then(function() {game.start()});
@@ -76,6 +75,7 @@ function fireProductChanged(product, value) {
 }
 
 function showContent(button) {
+	game.hideInfo();
 	game.showContent(button);
 }
 
@@ -140,8 +140,10 @@ document.getElementById('map').onmouseup = function(event) {
 		var building = model.getNewBuilding(game.queuedBuilding);
 		game.build(building, coords[0], coords[1], model.getPlayerFamily());
 		game.queuedBuilding = "";
+		game.hideInfo();
 	} else {
 		//TODO produce or assign family members or...
+		game.toggleInfo(coords[0], coords[1]);
 	}
 }
 
