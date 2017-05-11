@@ -41,8 +41,10 @@
 			}
 			buyer.applyTime(product.time * amount);
 			buyer.augment(product.name, amount);
+			this.model.log(Math.abs(amount) + " " + product.text + " am Markt " + (amount >= 0 ? "ge" : "ver") + "kauft.");
+		} else {
+			this.model.log((amount >= 0 ? "K" : "Verk") + "auf von " + Math.abs(amount) + " " + product.text + " fehlgeschlagen.");
 		}
-		this.model.log(Math.abs(amount) + " " + product.text + " am Markt " + (amount >= 0 ? "ge" : "ver") + "kauft.");
 		this.view.update(this.model);
 	}
 	

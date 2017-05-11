@@ -11,11 +11,10 @@
 	this.showInfo = false;
 	
 	this.move = function (dirx, diry) {
-		// move camera
 		var delta = 200; 
 		this.x += dirx * delta;
 		this.y += diry * delta;
-		// clamp values
+		
 		this.x = Math.max(0, Math.min(this.x, this.maxX));
 		this.y = Math.max(0, Math.min(this.y, this.maxY));
 	};
@@ -33,10 +32,9 @@
 	this.update = function (model) {
 		this.drawMap(model.map);
 		this.drawResources(model.getPlayerFamily().resources, model.getPlayerFamily().time, model.city.time);
-		this.drawBuildingScreen(BUILDINGS, model);
+		this.drawBuildingScreen(model.possibleBuildings, model);
 		this.drawMarket(model.market);
-		this.drawPersons(model.getPlayerFamily().familyMembers);
-		
+		this.drawPersons(model.getPlayerFamily());
 		//TODO changeResources, buttons etc.
 	}
 	
@@ -99,7 +97,7 @@
 	
 	this.drawTile = function (context, tile, startX, startY, width, height) {
 		context.drawImage(Loader.getImage("background"), startX, startY, width+1, height+1);
-		context.drawImage(Loader.getImage(tile.key), startX, startY, width, height);
+		context.drawImage(Loader.getImage(tile.name), startX, startY, width, height);
 	}
 	
 	this.drawHighlightedTile = function (context, x, y, width, height) {
@@ -169,6 +167,12 @@
 		title.innerHTML = building.text;
 		div.appendChild(title);
 		
+		
+		var image = document.createElement("IMG");
+		image.src = "resources/images/" + building.name + ".png";
+		div.appendChild(image);
+		
+		
 		var time = document.createElement("div");
 		time.className = "building-cost";
 		time.innerHTML = "Zeit: " + building.time;
@@ -233,9 +237,16 @@
 		motherDiv.appendChild(timeDiv);
 	}
 	
-	this.drawPersons = function (persons) {
+	this.drawPersons = function (family) {
+		var persons = family.familyMembers;
 		var div = document.getElementById("content-family");
 		div.innerHTML = "";
+		
+		var title = document.createElement("p");
+		title.style.fontSize = "x-large";
+		title.innerHTML = "Familie " + family.name;
+		div.appendChild(title);
+		
 		for (var i = 0; i < persons.length; i++) {
 			div.appendChild(this.createPersonDiv(persons[i]));
 		}

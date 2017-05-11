@@ -240,7 +240,7 @@ Map.prototype.convert = function (i, j) {
 };
 
 function EmptyCell() {
-	this.key = "Empty0" + (Math.floor(Math.random() * 9) + 1);
+	this.name = "Empty0" + (Math.floor(Math.random() * 9) + 1);
 	
 	this.isEmpty = function () {
 		return true;
@@ -257,6 +257,5 @@ function Building() {
 		this.text = that.text;
 		this.costs = that.costs;
 		this.time = that.time;
-		this.key = that.key;
 	}
 }

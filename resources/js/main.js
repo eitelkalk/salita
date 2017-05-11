@@ -7,12 +7,12 @@ var Loader = {
     images: {}
 };
 
-Loader.loadImage = function (key, src) {
+Loader.loadImage = function (name, src) {
     var img = new Image();
 	
 	var promise = new Promise(function(resolve, reject) {
 		img.onload = function () {
-			Loader.images[key] = img;
+			Loader.images[name] = img;
 			resolve(img);
 		};
 		img.onerror = function () {
@@ -25,14 +25,14 @@ Loader.loadImage = function (key, src) {
 	return promise;
 };
 
-Loader.getImage = function (key) {
-	if (key in this.images) {
-		return this.images[key];
+Loader.getImage = function (name) {
+	if (name in this.images) {
+		return this.images[name];
 	} else {
-		console.log("keen Bild: " + key);
+		console.log("keen Bild: " + name);
 		return null;
 	}
-    return (key in this.images) ? this.images[key] : null;
+    return (name in this.images) ? this.images[name] : null;
 };
 
 
@@ -43,8 +43,8 @@ function loadImages() {
 		promises.push(Loader.loadImage("Empty0" + i, "resources/images/Empty0" + i + ".png"));
 	}
 	for (var i = 0; i < BUILDINGS.length; i++) {
-		var key = BUILDINGS[i].key;
-		promises.push(Loader.loadImage(key, "resources/images/" + key + ".png"));
+		var name = BUILDINGS[i].name;
+		promises.push(Loader.loadImage(name, "resources/images/" + name + ".png"));
 	}
 	Promise.all(promises).then(function() {game.start()});
 }
@@ -152,7 +152,9 @@ document.getElementById("map").onmousemove = function(event) {
 	var rect = document.getElementById('map').getBoundingClientRect();
 	view.highlightX = event.clientX  - rect.left;
 	view.highlightY = event.clientY - rect.top;
-	view.drawMap(model.map);
+	if (view.highlight) {
+		view.drawMap(model.map);
+	}
 }
 
 //bind window events to game

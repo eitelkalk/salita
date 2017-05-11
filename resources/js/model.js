@@ -34,6 +34,15 @@
 		this.buildings = START_BUILDINGS;
 		this.city.families = this.families;
 		this.city.model = this;
+		
+		//Buildings possible for the player to build
+		this.possibleBuildings = []
+		for (var i = 0; i < BUILDINGS.length; i++) {
+			var building = BUILDINGS[i];
+			if (!building.name.includes("-pc-")) {
+				this.possibleBuildings.push(building);
+			}
+		}
 	}
 	
 	this.canBeBuiltByPlayer = function (building) {
