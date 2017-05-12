@@ -41,9 +41,9 @@ Loader.getImage = function (name) {
 
 Loader.performInstanceLoaded = function () {
 	Loader.loadedInstances++;
-	var length = document.getElementById("load-bar").width;
+	var length = document.getElementById("load-bar").offsetWidth;
 	var status = document.getElementById("load-status");
-	status.width = status.width + length * (Loader.loadedInstances / Loader.stepsUntilLoadingFinished);
+	status.style.width = 100 * (Loader.loadedInstances / Loader.stepsUntilLoadingFinished) + "%";
 	if (Loader.loadedInstances == Loader.stepsUntilLoadingFinished) {
 		document.getElementById("load-screen").style.display = "none";
 	}

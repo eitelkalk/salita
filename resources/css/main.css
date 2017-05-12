@@ -270,6 +270,7 @@ h1 {
 #load-status {
 	display: block;
 	height: 100%;
+	width: 6px;
 	border-radius: 20px;
 	background: #7D0000;
 }
