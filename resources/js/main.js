@@ -4,7 +4,9 @@ var game = new Game(model, view);
 
 //Image loader
 var Loader = {
-    images: {}
+    images : [],
+	stepsUntilLoadingFinished : BUILDINGS.length + 10,
+	loadedInstances : 0
 };
 
 Loader.loadImage = function (name, src) {
@@ -14,9 +16,11 @@ Loader.loadImage = function (name, src) {
 		img.onload = function () {
 			Loader.images[name] = img;
 			resolve(img);
+			Loader.performInstanceLoaded();
 		};
 		img.onerror = function () {
 			reject("Image load failed: " + src);
+			Loader.performInstanceLoaded();
 		};
 	
 	});
@@ -34,6 +38,16 @@ Loader.getImage = function (name) {
 	}
     return (name in this.images) ? this.images[name] : null;
 };
+
+Loader.performInstanceLoaded = function () {
+	Loader.loadedInstances++;
+	var length = document.getElementById("load-bar").width;
+	var status = document.getElementById("load-status");
+	status.width = status.width + length * (Loader.loadedInstances / Loader.stepsUntilLoadingFinished);
+	if (Loader.loadedInstances == Loader.stepsUntilLoadingFinished) {
+		document.getElementById("load-screen").style.display = "none";
+	}
+}
 
 
 function loadImages() {
