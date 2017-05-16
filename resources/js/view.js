@@ -31,11 +31,10 @@
 	
 	this.update = function (model) {
 		this.drawMap(model.map);
-		this.drawResources(model.getPlayerFamily().resources, model.getPlayerFamily().time, model.city.time);
+		this.drawResources(model.getPlayerFamily().resources);
 		this.drawBuildingScreen(model.possibleBuildings, model);
 		this.drawMarket(model.market);
 		this.drawPersons(model.getPlayerFamily());
-		//TODO changeResources, buttons etc.
 	}
 	
 	this.updateSize = function (mapWidth, mapHeight, width, height) {
@@ -92,7 +91,7 @@
 		
 		var x = (this.infoX - startCol) * this.tileSize + offsetX;
 		var y = (this.infoY - startRow) * this.tileSize + offsetY;
-		this.drawInfo(x, y, this.tileSize, this.tileSize, canvas.width, canvas.height);
+		this.drawInfo(map.get(this.infoX, this.infoY), x, y, this.tileSize, this.tileSize, canvas.width, canvas.height);
 	}
 	
 	this.drawTile = function (context, tile, startX, startY, width, height) {
@@ -107,12 +106,14 @@
 		}
 	}
 	
-	this.drawInfo = function (x, y, width, height, maxWidth, maxHeight) {
+	this.drawInfo = function (tile, x, y, width, height, maxWidth, maxHeight) {
 		var info = document.getElementById("info");
 		if (this.showInfo) {
 			info.innerHTML = "";
 			info.style.display = "block";
-			info.innerHTML = "Hier könnte Ihre Werbung stehen."; //TODO
+			if (!tile.isEmpty()) {
+				info.appendChild(this.createInfo(tile));
+			}
 			var top = y - info.offsetHeight;
 			top = top < 0 ? top + this.tileSize + info.offsetHeight : top;
 			top = Math.max(0, Math.min(top, maxHeight - info.offsetHeight));
@@ -122,6 +123,74 @@
 			info.style.left = left + "px";
 		} else {
 			info.style.display = "none";
+		}
+	}
+	
+	this.createInfo = function (building) {
+		switch (building.category) {
+			case "home": return this.createHomeInfo(building);
+			case "shop": return this.createShopInfo(building);
+		}
+		var div = document.createElement("div");
+		div.innerHTML = LAN.get(building.name) + "<br>";
+		return div;
+	}
+	
+	this.createHomeInfo = function (building) {
+		var div = document.createElement("div");
+		div.innerHTML = LAN.get(building.name) + " (" + building.owner.name + ")<br>";
+		div.innerHTML += LAN.get("residents") + ":";
+		if (building.residents.length == 0) {
+			div.innerHTML += " " + LAN.get("none") + "<br>";
+		} else {
+			div.innerHTML += "<br>";
+			for (var i = 0; i < building.residents.length; i++) {
+				var person = building.residents[i];
+				div.innerHTML += person.name + "<br>";
+			}
+		}
+		div.innerHTML += LAN.get("free space") + ": " + (building.capacity - building.residents.length) + "<br>";
+		
+		return div;
+	}
+	
+	this.createShopInfo = function (building) {
+		var div = document.createElement("div");
+		div.className = "shop-info";
+		div.innerHTML = LAN.get(building.name) + "<br>";
+		div.innerHTML += LAN.get("foremen") + ": " + building.getJob("foreman").worker.length + "/" + building.getJob("foreman").max + "<br>";
+		div.innerHTML += LAN.get("journeymen") + ": " + building.getJob("journeyman").worker.length + "/" + building.getJob("journeyman").max + "<br>";
+		div.innerHTML += LAN.get("apprentices") + ": " + building.getJob("apprentice").worker.length + "/" + building.getJob("apprentice").max + "<br>";
+		var produceButtons = [];
+		for (var i = 0; i < building.products.length; i++) {
+			var product = building.products[i];
+			var text = "";
+			for (var j = 0; j < product.costs.length; j++) {
+				var cost = product.costs[j];
+				text += ", " + cost.value + " " + LAN.get(cost.name);
+			}
+			text = text.replace(", ", "");
+			div.appendChild(document.createTextNode(text));
+			var produceButton = document.createElement("a");
+			produceButton.innerHTML = "-\>"; //TODO
+			div.appendChild(produceButton);
+			produceButtons[i] = produceButton;
+			div.appendChild(document.createTextNode(LAN.get(product.name)));
+			div.appendChild(document.createElement("br"));
+		}
+		
+		
+		this.addProduceOnClickEvents(produceButtons, building);
+		return div;
+	}
+	
+	this.addProduceOnClickEvents = function (buttons, building) {
+		for (var i = 0; i < buttons.length; i++) {
+			(function (index) {
+				buttons[index].onclick = function() {
+					produce(building, building.products[index]);
+				};
+			})(i);
 		}
 	}
 	
@@ -148,8 +217,15 @@
 		motherDiv.innerHTML = "";
 		
 		var buildable = [];
+		var nextCategoryIndex = 0;
 		for (var i = 0; i < buildings.length; i++) {
 			var building = buildings[i];
+			if (nextCategoryIndex < CATEGORIES.length && CATEGORIES[nextCategoryIndex] == building.category) {
+				var title = document.createElement("h3");
+				title.innerHTML = LAN.get(CATEGORIES[nextCategoryIndex]);
+				motherDiv.appendChild(title);
+				nextCategoryIndex++;
+			}
 			var div = this.createBuildingDiv(building);
 			motherDiv.appendChild(div);
 			buildable[i] = model.canBeBuiltByPlayer(building);
@@ -164,7 +240,7 @@
 		div.className = "building";
 		var title = document.createElement("div");
 		title.className = "building-title";
-		title.innerHTML = building.text;
+		title.innerHTML = LAN.get(building.name);
 		div.appendChild(title);
 		
 		
@@ -175,21 +251,21 @@
 		
 		var time = document.createElement("div");
 		time.className = "building-cost";
-		time.innerHTML = "Zeit: " + building.time;
+		time.innerHTML = LAN.get("time") + ": " + this.formatShort(building.time);
 		div.appendChild(time);
 		
 		for (var i = 0; i < building.costs.length; i++) {
 			var cost = building.costs[i];
 			var costDiv = document.createElement("div");
 			costDiv.className = "building-cost";
-			costDiv.innerHTML = cost.text + ": " + cost.value;
+			costDiv.innerHTML = LAN.get(cost.name) + ": " + cost.value;
 			div.appendChild(costDiv);
 		}
 		
 		var button = document.createElement("a");
 		button.id = "build-" + building.name;
 		button.className = "build";
-		button.innerHTML = "Bauen";
+		button.innerHTML = LAN.get("build");
 		div.appendChild(button);
 		return div;
 	}
@@ -211,7 +287,7 @@
 		}
 	}
 	
-	this.drawResources = function (resources, familyTime, cityTime) {
+	this.drawResources = function (resources) {
 		var motherDiv = document.getElementById("resources");
 		motherDiv.innerHTML = "";
 		
@@ -220,31 +296,19 @@
 			var div = document.createElement("div");
 			div.id = 'res-' + res.name;
 			div.className = 'resource';
-			div.innerHTML = res.text + ": " + res.value;
+			div.innerHTML = LAN.get(res.name) + ": " + res.value;
 			motherDiv.appendChild(div);
 		}
-		
-		var timeDiv = document.createElement("div");
-		timeDiv.id = 'res-family-time';
-		timeDiv.className = 'resource';
-		timeDiv.innerHTML = "Familienalter: " + this.format(familyTime);
-		motherDiv.appendChild(timeDiv);
-		
-		var timeDiv = document.createElement("div");
-		timeDiv.id = 'res-city-time';
-		timeDiv.className = 'resource';
-		timeDiv.innerHTML = "Stadtalter: " + this.format(cityTime);
-		motherDiv.appendChild(timeDiv);
 	}
 	
 	this.drawPersons = function (family) {
-		var persons = family.familyMembers;
+		var persons = family.members;
 		var div = document.getElementById("content-family");
 		div.innerHTML = "";
 		
 		var title = document.createElement("p");
 		title.style.fontSize = "x-large";
-		title.innerHTML = "Familie " + family.name;
+		title.innerHTML = LAN.get("family") + " " + family.name + ", " + LAN.get("age") + ": " + this.format(family.time);
 		div.appendChild(title);
 		
 		for (var i = 0; i < persons.length; i++) {
@@ -286,48 +350,65 @@
 		div.style.display = "none";
 		div.id = "info-" + person.id;
 		div.className = "person-info";
-		div.appendChild(this.createPersonData("Alter", this.format(person.age)));
-		div.appendChild(this.createPersonData("Geschlecht", person.genderText));
+		div.appendChild(this.createPersonData(LAN.get("age") + ": " + this.format(person.age)));
+		div.appendChild(this.createPersonData(LAN.get("gender") + ": " + LAN.get(person.gender)));
 		if (person.spouse == "none") {
 			var marriageButton = document.createElement("a");
-			marriageButton.innerHTML = "Verheiraten (+1 Familienmitglied)";
-			//TODO costs?
+			marriageButton.innerHTML = LAN.get("marry");
+			marriageButton.onclick = function() { marry(person) };
 			div.appendChild(marriageButton);
 		} else {
-			div.appendChild(this.createPersonData("Ehepartner", person.spouse.name));
+			div.appendChild(this.createPersonData(LAN.get("spouse") + ": " + person.spouse.name));
+			var childButton = document.createElement("a");
+			childButton.innerHTML = LAN.get("beget-children");
+			childButton.onclick = function() { begetChildren(person) };
+			div.appendChild(childButton);
 		}
-		//TODO functions and hence buttons:
-		//begetChildren
-		//educate
-		//...
+		div.appendChild(document.createElement("br"));
+		for (var i = 0; i < person.children.length; i++) {
+			div.appendChild(this.createPersonData(LAN.get("child") + ": " + person.children[i].name));
+		}
+		if (person.job !== "none") {
+			var args = [LAN.get(person.job.name), LAN.get(person.job.workplace.name)];
+			div.appendChild(this.createPersonData(LAN.get("works-as-at", args)));
+		}
+		var jobButton = document.createElement("a");
+		jobButton.innerHTML = LAN.get("educate");
+		jobButton.onclick = function() { educate(person) };
+		div.appendChild(jobButton);
 		return div;
 	}
 	
-	this.createPersonData = function (name, value) {
+	this.createPersonData = function (text) {
 		var div = document.createElement("div");
 		div.style.display = "block";
-		div.innerHTML = name + ": " + value;
+		div.innerHTML = text;
 		return div;
 	}
 	
-	this.format = function (time) {
+	this.formatFancy = function (time, y, m, d) {
 		var years = Math.floor(time / YEAR);
 		var months = Math.floor((time - years * YEAR ) / MONTH);
 		var days = (time - years * YEAR - months * MONTH);
 		var text = "";
 		if (years > 0) {
-			text += years + "&nbsp;Jahr"
-			text += years > 1 ? "e " : " ";
+			text += years + "&nbsp;" + (years == 1 ? LAN.get(y) : LAN.get(y + "s")) + " ";
 		}
 		if (months > 0) {
-			text += months + "&nbsp;Monat"
-			text += months > 1 ? "e " : " ";
+			text += months + "&nbsp;" + (months == 1 ? LAN.get(m) : LAN.get(m + "s")) + " ";
 		}
 		if (years + months == 0 || days > 0) {
-			text += days + "&nbsp;Tag"
-			text += days !== 1 ? "e" : "";
+			text += days + "&nbsp;" + (days == 1 ? LAN.get(d) : LAN.get(d + "s"));
 		}
 		return text;
+	}
+	
+	this.formatShort = function (time) {
+		return this.formatFancy(time, "y", "m", "d");
+	}
+	
+	this.format = function (time) {
+		return this.formatFancy(time, "year", "month", "day");
 	}
 	
 	this.drawMarket = function (products) {
@@ -345,7 +426,7 @@
 	this.createMarketProduct = function (product) {
 		var div = document.createElement("div");
 		div.className = "product";
-		div.appendChild(document.createTextNode(product.text + ": "));
+		div.appendChild(document.createTextNode(LAN.get(product.name) + ": "));
 		var field = document.createElement("input");
 		field.id = "in-" + product.name;
 		field.type = "number";
@@ -356,24 +437,24 @@
 			fireProductChanged(product, field.value);
 		};
 		div.appendChild(field);
-		var costText = " für je ";
+		var costText = " " + LAN.get("each at") + " ";
 		for (var i = 0; i < product.costs.length; i++) {
 			//TODO
 			costText += product.costs[i].value + "&nbsp;";
-			costText += product.costs[i].text;
+			costText += LAN.get(product.costs[i].name);
 		}
-		costText += " und " + product.time + "&nbsp;Zeit";
+		costText += " " + LAN.get("and") + " " + product.time + "&nbsp;" + LAN.get("time");
 		var costs = document.createElement("span");
 		costs.innerHTML = costText;
 		div.appendChild(costs);
 		var b = document.createElement("a");
 		b.className = "buy";
-		b.innerHTML = "Kaufen";
+		b.innerHTML = LAN.get("buy");
 		b.onclick = function () { buy(product, 1); };
 		div.appendChild(b);
 		var sell = document.createElement("a");
 		sell.className = "sell";
-		sell.innerHTML = "Verkaufen";
+		sell.innerHTML = LAN.get("sell");
 		sell.onclick = function () { buy(product, -1); };
 		div.appendChild(sell);
 		return div;

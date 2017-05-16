@@ -7,20 +7,6 @@
 		return this.families[0];
 	}
 	
-	this.getNewBuilding = function (name) {
-		var build;
-		for (var i = 0; i < BUILDINGS.length; i++) {
-			if ( BUILDINGS[i].name == name) {
-				build = BUILDINGS[i];
-				break;
-			}
-		}
-		
-		var building = new Building();
-		building.copyData(build);
-		return building;
-	}
-	
 	this.init = function () {
 		//TODO load stored data
 		this.city = START_CITY;
@@ -31,7 +17,7 @@
 		for (var i = 0; i < this.families.length; i++) {
 			this.families[i].model = this;
 		}
-		this.buildings = START_BUILDINGS;
+		this.initBuildings(START_BUILDINGS);
 		this.city.families = this.families;
 		this.city.model = this;
 		
@@ -39,9 +25,18 @@
 		this.possibleBuildings = []
 		for (var i = 0; i < BUILDINGS.length; i++) {
 			var building = BUILDINGS[i];
-			if (!building.name.includes("-pc-")) {
+			if (!building.name.includes("PC")) {
 				this.possibleBuildings.push(building);
 			}
+		}
+	}
+	
+	this.initBuildings = function (buildingData) {
+		for (var i = 0; i < buildingData.length; i++) {
+			var building = buildingData[i].building;
+			var row = buildingData[i].i;
+			var col = buildingData[i].j;
+			this.map.set(building, row, col);
 		}
 	}
 	

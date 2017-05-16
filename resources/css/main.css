@@ -57,7 +57,7 @@ h1 {
 }
 
 .content-build{
-	width: 100%;
+	padding: 10px;
 	overflow: hidden;
 }
 
@@ -81,7 +81,7 @@ h1 {
     position: fixed;
 	bottom: 0;
     overflow: auto;
-	font-size: 16pt;
+	font-size: 14pt;
 }
 
 .toolbar li a {
@@ -107,7 +107,7 @@ h1 {
 	margin-left: 50px;
 	padding: 0;
 	height: 200px;
-	width: calc(50% - 50px);
+	width: calc(40% - 50px);
 	position: fixed;
 	float: left;
 	bottom: 0;
@@ -128,7 +128,7 @@ h1 {
 	margin: 0;
 	padding: 0;
 	height: 200px;
-	width: 50%;
+	width: 60%;
 	position: fixed;
 	bottom: 0;
 	right:0;
@@ -151,17 +151,16 @@ h1 {
 	float: left;
 	padding: 2px;
 	margin: 2px;
-	width: 100px;
+	width: 150px;
 }
 
 .building {
 	background-color: #776e65;
 	color: white;
-	float: left;
+	display: inline-block;
 	padding: 5px;
 	margin: 5px;
 	width: 150px;
-	height: 200px;
 }
 
 .building a {
@@ -229,15 +228,28 @@ h1 {
 }
 
 .person-info a {
-	margin: 0;
+	margin: 5px;
 	width: initial;
 	border-radius: initial;
 	padding: 5px;
 }
 
+.shop-info a {
+	background-color: #776e65;
+	color: #faf8ef;
+	padding: 0 5px;
+	margin: 5px;
+	height: 20px;
+	width: 20px;
+	line-height: 20px;
+	text-align: center;
+	text-decoration: none;
+}
+
 #info {
 	display: none;
 	position: fixed;
+	padding: 5px;
 	z-index: 42;
 	background: #faf8ef;
 	color: #776e65;

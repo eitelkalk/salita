@@ -60,11 +60,12 @@ function loadImages() {
 		var name = BUILDINGS[i].name;
 		promises.push(Loader.loadImage(name, "resources/images/" + name + ".png"));
 	}
-	Promise.all(promises).then(function() {game.start()});
+	return promises;
 }
 
 function main() {
-	loadImages();
+	var imagePromises = loadImages();
+	Promise.all(imagePromises).then(function() {game.start()});
 }
 
 main();
@@ -78,14 +79,38 @@ function build(name) {
 	view.highlight = true;
 }
 
-//TODO
 function buy(product, multi) {
 	var value = Math.floor(document.getElementById('in-' + product.name).value);
-	game.buy(product, multi*value, model.getPlayerFamily());
+	if (multi >= 0) {
+		game.buy(product, multi*value, model.getPlayerFamily());
+	} else {
+		game.sell(product, -multi*value, model.getPlayerFamily());
+	}
+}
+
+function marry(person) {
+	game.marry(person);
+}
+
+function begetChildren(person) {
+	person.gender == "male" ? game.begetChildren(person.spouse) : game.begetChildren(person);
+}
+
+function educate(person) {
+	var button = document.getElementById('map-button');
+	showContent(button);
+	game.queuedPerson = person;
+	view.highlight = true;
+}
+
+function produce(building, product) {
+	if (building.owner == model.getPlayerFamily()) {
+		game.produce(building, product);
+	}
 }
 
 function fireProductChanged(product, value) {
-	
+	//TODO update market
 }
 
 function showContent(button) {
@@ -122,26 +147,52 @@ Keyboard.LEFT  = [37, 65];
 Keyboard.RIGHT = [39, 68];
 Keyboard.UP    = [38, 87];
 Keyboard.DOWN  = [40, 83];
+Keyboard.K  = 75;
+Keyboard.B  = 66;
+Keyboard.M  = 77;
+Keyboard.F  = 70;
 
 Keyboard.left  = function (key) { return Keyboard.LEFT.indexOf(key)  !== -1; }
 Keyboard.right = function (key) { return Keyboard.RIGHT.indexOf(key) !== -1; }
 Keyboard.up    = function (key) { return Keyboard.UP.indexOf(key)    !== -1; }
 Keyboard.down  = function (key) { return Keyboard.DOWN.indexOf(key)  !== -1; }
 
-function move(event) {
+function move(keyCode) {
 	var dirx = 0;
     var diry = 0;
-    if (Keyboard.left(event.keyCode))  { dirx = -1; }
-    if (Keyboard.right(event.keyCode)) { dirx =  1; }
-    if (Keyboard.up(event.keyCode))    { diry = -1; }
-    if (Keyboard.down(event.keyCode))  { diry =  1; }
+    if (Keyboard.left(keyCode))  { dirx = -1; }
+    if (Keyboard.right(keyCode)) { dirx =  1; }
+    if (Keyboard.up(keyCode))    { diry = -1; }
+    if (Keyboard.down(keyCode))  { diry =  1; }
 
     view.move(dirx, diry);
 	view.drawMap(model.map);
 }
 
+function switchMenu(keyCode) {
+	switch (keyCode) {
+		case Keyboard.K : 
+			var button = document.getElementById('map-button');
+			showContent(button);
+			break;
+		case Keyboard.M : 
+			var button = document.getElementById('market-button');
+			showContent(button);
+			break;
+		case Keyboard.F :
+			var button = document.getElementById('family-button');
+			showContent(button);
+			break;
+		case Keyboard.B :
+			var button = document.getElementById('build-button');
+			showContent(button);
+			break;
+	}
+}
+
 document.onkeydown = function(event) {
-	move(event);
+	move(event.keyCode);
+	switchMenu(event.keyCode);
 }
 
 document.getElementById('map').onmouseup = function(event) {
@@ -151,13 +202,16 @@ document.getElementById('map').onmouseup = function(event) {
 	var coords = view.getIndizesAt(x, y);
 	
 	if (game.queuedBuilding !== "") {
-		var building = model.getNewBuilding(game.queuedBuilding);
+		var building = getNewBuilding(game.queuedBuilding);
 		game.build(building, coords[0], coords[1], model.getPlayerFamily());
 		game.queuedBuilding = "";
 		game.hideInfo();
+	} else if (game.queuedPerson !== "") {
+		var building = game.model.map.get(coords[0], coords[1]);
+		game.educate(game.queuedPerson, building);
 	} else {
-		//TODO produce or assign family members or...
 		game.toggleInfo(coords[0], coords[1]);
+		//TODO produce or assign family members or...
 	}
 }
 
