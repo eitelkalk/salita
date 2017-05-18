@@ -9,6 +9,7 @@
 	this.infoX = 0;
 	this.infoY = 0;
 	this.showInfo = false;
+	this.personCollapsed = [];
 	
 	this.move = function (dirx, diry) {
 		var delta = 200; 
@@ -35,6 +36,7 @@
 		this.drawBuildingScreen(model.possibleBuildings, model);
 		this.drawMarket(model.market);
 		this.drawPersons(model.getPlayerFamily());
+		this.updateLogger(model);
 	}
 	
 	this.updateSize = function (mapWidth, mapHeight, width, height) {
@@ -44,17 +46,29 @@
 		this.y = Math.max(0, Math.min(this.y, this.maxY));
 	}
 	
-	this.log = function(text) {
+	this.updateLogger = function(model) {
 		var logger = document.getElementById("logger");
-		var oldText = logger.innerHTML;
-		oldText = oldText.replace(/<p>/g, "");
-		var array = oldText.split(/<\/p>/);
-		array.pop();
-		array.unshift(text);
-		while (array.length > 20) {
-			array.pop();
+		logger.innerHTML = "";
+		for (var i = 0; i < model.logger.length; i++ ) {
+			var event = model.logger[i];
+			var year = Math.floor(event.cityTime / YEAR);
+			var text = LAN.get("log", [year, LAN.get(event.text, event.args)]);
+			var color = this.getLoggerColor(event, model, text);
+			logger.innerHTML += "<p title='" + event.family.name + "' style='color:" + color + "'>" + text + "</p>";
 		}
-		logger.innerHTML = "<p>" + array.join("</p><p>") + "</p>";
+	}
+	
+	this.getLoggerColor = function (event, model, text) {
+		if (event.family == model.getPlayerFamily()) {
+			return "#faf8ef";
+		}
+		if (event.family == model.city) {
+			return "#faf8ef";
+		}
+		if (text.includes(model.getPlayerFamily().nema)) {
+			return "faf8ef";
+		}
+		return "black";
 	}
 	
 	this.drawMap = function(map) {
@@ -157,7 +171,7 @@
 	this.createShopInfo = function (building) {
 		var div = document.createElement("div");
 		div.className = "shop-info";
-		div.innerHTML = LAN.get(building.name) + "<br>";
+		div.innerHTML = LAN.get(building.name) + " (" + building.owner.name + ")<br>";
 		div.innerHTML += LAN.get("foremen") + ": " + building.getJob("foreman").worker.length + "/" + building.getJob("foreman").max + "<br>";
 		div.innerHTML += LAN.get("journeymen") + ": " + building.getJob("journeyman").worker.length + "/" + building.getJob("journeyman").max + "<br>";
 		div.innerHTML += LAN.get("apprentices") + ": " + building.getJob("apprentice").worker.length + "/" + building.getJob("apprentice").max + "<br>";
@@ -251,7 +265,7 @@
 		
 		var time = document.createElement("div");
 		time.className = "building-cost";
-		time.innerHTML = LAN.get("time") + ": " + this.formatShort(building.time);
+		time.innerHTML = LAN.get("time") + ": " + formatShort(building.time);
 		div.appendChild(time);
 		
 		for (var i = 0; i < building.costs.length; i++) {
@@ -302,21 +316,55 @@
 	}
 	
 	this.drawPersons = function (family) {
+		this.cleanUpPersonCollapsed(family);
 		var persons = family.members;
 		var div = document.getElementById("content-family");
 		div.innerHTML = "";
 		
 		var title = document.createElement("p");
 		title.style.fontSize = "x-large";
-		title.innerHTML = LAN.get("family") + " " + family.name + ", " + LAN.get("age") + ": " + this.format(family.time);
+		title.innerHTML = LAN.get("family") + " " + family.name + ", " + LAN.get("age") + ": " + format(family.time);
 		div.appendChild(title);
 		
 		for (var i = 0; i < persons.length; i++) {
-			div.appendChild(this.createPersonDiv(persons[i]));
+			var person = persons[i];
+			var collapsed = this.isPersonCollapsed(person.id);
+			div.appendChild(this.createPersonDiv(person, collapsed));
 		}
 		
 		var buttons = document.getElementsByClassName("person-show-hide-button");
 		this.addShowHideFunctionalityTo(buttons);
+	}
+	
+	this.indexOfPersonCollapsed = function (id) {
+		for (var i = 0; i < this.personCollapsed.length; i++) {
+			if (id == this.personCollapsed[i].id) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	this.isPersonCollapsed = function (id) {
+		var index = this.indexOfPersonCollapsed(id);
+		if (index !== -1) {
+			var data = this.personCollapsed[index];
+			return data.collapsed;
+		}
+		//person is new
+		this.personCollapsed.push({"id" : id, "collapsed" : true});
+		return true;
+	}
+	
+	this.cleanUpPersonCollapsed = function (family) {
+		var persons = family.members;
+		for (var i = 0; i < persons.length; i++) {
+			var person = persons[i];
+			if (!person.isAlive) {
+				var index = this.indexOfPersonCollapsed(person.id);
+				this.personCollapsed.splice(index, 1);
+			}
+		}
 	}
 	
 	this.addShowHideFunctionalityTo = function (buttons) {
@@ -330,27 +378,34 @@
 		}
 	}
 	
-	this.createPersonDiv = function (person) {
+	this.setPersonCollapsed = function (id, collapsed) {
+		var index = this.indexOfPersonCollapsed(id);
+		if (index !== -1) {
+			this.personCollapsed[index].collapsed = collapsed;
+		}
+	}
+	
+	this.createPersonDiv = function (person, collapsed) {
 		var div = document.createElement("div");
 		div.id = "person-" + person.id;
 		div.className = "person";
 		var button = document.createElement("a");
 		button.id = "button-" + person.id;
 		button.className = "person-show-hide-button";
-		button.innerHTML = "+";
+		button.innerHTML = collapsed ? "+" : "-";
 		div.appendChild(button);
-		div.innerHTML += person.name;
-		var info = this.createPersonInfo(person);
+		div.innerHTML += person.name + " (" + formatYear(person.age) + ")";
+		var info = this.createPersonInfo(person, collapsed);
 		div.appendChild(info);
 		return div;
 	}
 	
-	this.createPersonInfo = function (person) {
+	this.createPersonInfo = function (person, collapsed) {
 		var div = document.createElement("div");
-		div.style.display = "none";
 		div.id = "info-" + person.id;
+		div.style.display = collapsed ? "none" : "block";
 		div.className = "person-info";
-		div.appendChild(this.createPersonData(LAN.get("age") + ": " + this.format(person.age)));
+		div.appendChild(this.createPersonData(LAN.get("age") + ": " + format(person.age)));
 		div.appendChild(this.createPersonData(LAN.get("gender") + ": " + LAN.get(person.gender)));
 		if (person.spouse == "none") {
 			var marriageButton = document.createElement("a");
@@ -384,31 +439,6 @@
 		div.style.display = "block";
 		div.innerHTML = text;
 		return div;
-	}
-	
-	this.formatFancy = function (time, y, m, d) {
-		var years = Math.floor(time / YEAR);
-		var months = Math.floor((time - years * YEAR ) / MONTH);
-		var days = (time - years * YEAR - months * MONTH);
-		var text = "";
-		if (years > 0) {
-			text += years + "&nbsp;" + (years == 1 ? LAN.get(y) : LAN.get(y + "s")) + " ";
-		}
-		if (months > 0) {
-			text += months + "&nbsp;" + (months == 1 ? LAN.get(m) : LAN.get(m + "s")) + " ";
-		}
-		if (years + months == 0 || days > 0) {
-			text += days + "&nbsp;" + (days == 1 ? LAN.get(d) : LAN.get(d + "s"));
-		}
-		return text;
-	}
-	
-	this.formatShort = function (time) {
-		return this.formatFancy(time, "y", "m", "d");
-	}
-	
-	this.format = function (time) {
-		return this.formatFancy(time, "year", "month", "day");
 	}
 	
 	this.drawMarket = function (products) {
@@ -474,5 +504,21 @@
 			tablinks[i].className = tablinks[i].className.replace(" active-button", "");
 		}
 		button.className += " active-button";
+	}
+	
+	this.showGameOverScreen = function (family) {
+		var div = document.getElementById("game-over");
+		div.style.display = "block";
+		var title = document.createElement("h1");
+		title.innerHTML = "Salita";
+		div.appendChild(title);
+		var subtitle = document.createElement("p");
+		subtitle.innerHTML = "Was zählt, ist die Familie.";
+		div.appendChild(subtitle);
+		
+		var text = document.createElement("p");
+		text.innerHTML = LAN.get("game-over", [family.name, family.power]);
+		div.appendChild(text);
+		//TODO restart button
 	}
 }

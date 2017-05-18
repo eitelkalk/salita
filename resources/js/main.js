@@ -33,10 +33,9 @@ Loader.getImage = function (name) {
 	if (name in this.images) {
 		return this.images[name];
 	} else {
-		console.log("keen Bild: " + name);
-		return null;
+		console.log("No image found: " + name);
+		return null; //return dummy image
 	}
-    return (name in this.images) ? this.images[name] : null;
 };
 
 Loader.performInstanceLoaded = function () {
@@ -107,10 +106,15 @@ function produce(building, product) {
 	if (building.owner == model.getPlayerFamily()) {
 		game.produce(building, product);
 	}
+	//TODO error message or... ???
 }
 
 function fireProductChanged(product, value) {
 	//TODO update market
+}
+
+function gameOver(family) {
+	view.showGameOverScreen(family);
 }
 
 function showContent(button) {
@@ -119,7 +123,8 @@ function showContent(button) {
 }
 
 function showHide(button) {
-	var div = document.getElementById("info-" + button.id.replace("button-", ""));
+	var id = button.id.replace("button-", "");
+	var div = document.getElementById("info-" + id);
 	var isCollapsed = div.style.display == "none";
 	if (isCollapsed) {
 		div.style.display = "block";
@@ -128,6 +133,7 @@ function showHide(button) {
 		div.style.display = "none";
 		button.innerHTML = "+";
 	}
+	view.setPersonCollapsed(id, !isCollapsed);
 }
 
 function zoom(event) {
@@ -150,7 +156,8 @@ Keyboard.DOWN  = [40, 83];
 Keyboard.K  = 75;
 Keyboard.B  = 66;
 Keyboard.M  = 77;
-Keyboard.F  = 70;
+Keyboard.H  = 72;
+Keyboard.I  = 73;
 
 Keyboard.left  = function (key) { return Keyboard.LEFT.indexOf(key)  !== -1; }
 Keyboard.right = function (key) { return Keyboard.RIGHT.indexOf(key) !== -1; }
@@ -179,8 +186,9 @@ function switchMenu(keyCode) {
 			var button = document.getElementById('market-button');
 			showContent(button);
 			break;
-		case Keyboard.F :
-			var button = document.getElementById('family-button');
+		case Keyboard.I :
+		case Keyboard.H :
+			var button = document.getElementById('more-button');
 			showContent(button);
 			break;
 		case Keyboard.B :

@@ -5,6 +5,7 @@ function Person(family) {
 	this.children = [];
 	this.spouse = "none";
 	this.job = "none";
+	this.isAlive = true;
 	
 	this.hasEnough = function (cost) {
 		return this.family.hasEnough(cost);
@@ -26,7 +27,7 @@ function Person(family) {
 		} else {
 			this.feed(feedingTimes);
 		}
-		this.family.time += time;
+		this.family.processTime(time);
 	}
 	
 	this.die = function () {
@@ -93,8 +94,8 @@ function Person(family) {
 		this.family.findFreeHome().addResident(spouse);
 		this.spouse = spouse;
 		this.family.addPerson(spouse);
-		spouse.applyTime(300);
-		this.applyTime(300);
+		var power = Math.sign(this.family.power - family.power);
+		family.power += power;
 	}
 	
 	this.giveBirth = function () {
@@ -105,11 +106,6 @@ function Person(family) {
 		this.spouse.children.push(child);
 		child.parents.push(this);
 		child.parents.push(this.spouse);
-		var numberOfMonthsTillSuccess = Math.floor(Math.random() * 5) + 1;
-		var overallTime = (numberOfMonthsTillSuccess + 10) * MONTH;
-		this.applyTime(overallTime);
-		this.spouse.applyTime(overallTime);
-		child.applyTime(12 * YEAR); //TODO less with school
 		return child;
 	}
 }
@@ -117,6 +113,7 @@ function Person(family) {
 function Family(startResources, startTime, city) {
 	this.resources = startResources;
 	this.time = startTime;
+	this.simulationTime = 0;
 	this.city = city;
 	this.members = [];
 	this.buildings = [];
@@ -158,10 +155,15 @@ function Family(startResources, startTime, city) {
 		var l = this.members.length;
 		var personalTime = splitRandomly(time, this.members.length);
 		for (var i = 0; i < this.members.length; i++) {
-			this.members[i].applyTime(personalTime[i]); //TODO members die meanwhile and change array
+			this.members[i].applyTime(personalTime[i]);
 		}
 		this.canDie = true;
 		this.letMyPeopleGo();
+		this.city.processTime(this, time);
+	}
+	
+	this.processTime = function(time) {
+		this.time += time;
 		this.city.processTime(this, time);
 	}
 	
@@ -176,11 +178,14 @@ function Family(startResources, startTime, city) {
 	this.letMyPeopleGo = function () {
 		while (this.willDie.length > 0) {
 			var iDieNow = this.willDie.pop();
+			iDieNow.isAlive = false;
 			var index = this.members.indexOf(iDieNow);
 			this.members.splice(index, 1);
-			this.model.log(iDieNow.name + selectRandomlyFrom(DIE_TEXTS));			
+			var event = new Result(this, this.city.time, "log-die", [iDieNow.name, formatYear(iDieNow.maxAge)]);
 		}
-		//TODO check if family is alive
+		if (this.members.length == 0) {
+			setTimeout((function(){ gameOver(this); }).bind(this), 1000);
+		}
 	}
 	
 	this.dies = function (person) {
@@ -256,25 +261,24 @@ function City(name) {
 	}
 	
 	this.processTime = function (owner, time) {
-		if (owner == this.model.getPlayerFamily) {
+		if (owner == this.model.getPlayerFamily()) {
 			var times = splitRandomly(time, this.families.length-1);
-			//TODO assumes player family is at position 0
 			for (var i = 1; i < this.families.length; i++) {
-				this.performRandomAction(this.families[i], time);
+				var family = this.families[i];
+				family.simulationTime += times[i-1];
+				this.model.simulate(family);
 			}
+			this.updateFamilyPowers();
+			this.model.simulateNewFamily(time, this.powerSum);
+			this.time += time;
 		}
-		this.time += time;
-	}
-	
-	this.performRandomAction = function (family, time) {
-		//TODO
 	}
 	
 	this.applyTime = function (time) {
 		this.updateFamilyPowers();
-		for (family in this.families) {
+		for (var i = 0; i < this.families.length; i++) {
+			var family = this.families[i];
 			family.applyTime(time * family.power / this.powerSum);
-			//TODO not precise
 		}
 	}
 	
@@ -285,8 +289,8 @@ function City(name) {
 				return a.power - b.power;
 			}
 		);
-		for (family in this.families) {
-			this.powerSum += family.power;
+		for (var i = 0; i < this.families.length; i++) {
+			this.powerSum += this.families[i].power;
 		}
 	}
 	
@@ -321,6 +325,24 @@ function Map(width, height) {
 	this.get = function (i, j) {
 		return this.cells[this.convert(i,j)];
 	}
+
+	this.convert = function (i, j) {
+		return j*this.width + i;
+	}
+	
+	this.convertToPair = function (index) {
+		return [index % this.width, Math.floor(index / this.width)];
+	}
+	
+	this.getFreeRandomTile = function() {
+		var free = [];
+		for (var i = 0; i < this.cells.length; i++) {
+			if (this.cells[i].isEmpty()) {
+				free.push(this.convertToPair(i));
+			}
+		}
+		return selectRandomlyFrom(free);
+	}
 }
 
 Map.prototype.fillCells = function(size) {
@@ -329,11 +351,7 @@ Map.prototype.fillCells = function(size) {
 		cells.push(new EmptyCell());
 	}
 	return cells;
-};
-
-Map.prototype.convert = function (i, j) {
-	return j*this.width + i;
-};
+}
 
 function EmptyCell() {
 	this.name = "Empty0" + (Math.floor(Math.random() * 9) + 1);
@@ -480,8 +498,11 @@ function Shop(that) {
 			this.owner.reduce(product.costs[i]);
 		}
 		this.payWorkers(); //TODO dependent on time?
-		this.owner.augment({"name" : product.name, "value" : product.value}); //TODO 1?
-		var time = 1 * YEAR / this.numberOfWorkers(); //TODO 1 year each production?
+		this.owner.augment({"name" : product.name, "value" : product.value});
+	}
+	
+	this.applyTime = function (time) {
+		time = time / this.numberOfWorkers();
 		for (var i = 0; i < this.jobs.length; i++) {
 			var job = this.jobs[i];
 			for (var j = 0; j < job.worker.length; j++) {

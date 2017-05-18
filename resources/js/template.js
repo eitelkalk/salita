@@ -84,7 +84,6 @@ LAN.words["herbs"] = "Kräuter";
 LAN.words["medicine"] = "Medizin";
 LAN.words["male"] = "männlich";
 LAN.words["female"] = "weiblich";
-LAN.words["built"] = "gebaut";
 LAN.words["foremen"] = "Meister";
 LAN.words["journeymen"] = "Gesellen";
 LAN.words["apprentices"] = "Lehrlinge";
@@ -129,12 +128,21 @@ LAN.words["log-marriage-denied"] = "#1 kann nicht heiraten, weil kein freies Hau
 LAN.words["child"] = "Kind";
 LAN.words["beget-children"] = "Kinder zeugen";
 LAN.words["log-children-denied"] = "#1 und #2 können keine Kinder zeugen, weil kein freies Haus verfügbar ist.";
+LAN.words["log-children-too-old"] = "#1 und #2 können keine Kinder mehr zeugen. Sie sind zu alt.";
 LAN.words["log-children-success"] = "#1 erblickt das Licht der Welt.";
 LAN.words["works-as-at"] = "Arbeitet als #1 in: #2";
 LAN.words["educate"] = "Ausbilden";
-LAN.words["log-works-at"] = "#3: #1 wurde als #2 eingestellt.";
+LAN.words["log-educate-success"] = "#3: #1 wurde als #2 eingestellt.";
+LAN.words["log-educate-denial"] = "#2: #1 kann hier nicht arbeiten.";
 LAN.words["produce"] = "Produzieren";
-LAN.words["log-produce-success"] = "#1&nbsp;#2 in #3 produziert."
+LAN.words["log-produce-success"] = "#1&nbsp;#2 in #3 produziert.";
+LAN.words["log-produce-denial"] = "Zur Produktion benötigst du einen Meister, genügend Rohstoffe und du musst die Arbeiter bezahlen können.";
+LAN.words["log-building-success"] = "#1 wurde gebaut.";
+LAN.words["log-building-fail"] = "Bau von #1 wurde abgebrochen.";
+LAN.words["log-new-family"] = "Die Familie #1 ist in die Stadt gezogen.";
+LAN.words["game-over"] = "Das Spiel ist vorbei. Die Familie #1 kann nicht fortbestehen. Du hast sie zu #2 Ruhm geführt.";
+LAN.words["log-die"] = "#1 starb im Alter von #2n";
+LAN.words["log"] = "Jahr #1: #2";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -159,6 +167,7 @@ var BUILDINGS = [
 	{
 		"name"		: "HomePlayer01",
 		"category"	: "home",
+		"fame"		: 1,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100}, 
 						{"name" : "furniture", "value" : 5}, 
@@ -171,6 +180,7 @@ var BUILDINGS = [
 	{
 		"name"		: "HomePlayer02",
 		"category"	: "home",
+		"fame"		: 2,
 		"time"		: 400,
 		"costs"		: [	{"name" : "gold", "value" : 200}, 
 						{"name" : "furniture", "value" : 10}, 
@@ -183,6 +193,7 @@ var BUILDINGS = [
 	{
 		"name"		: "HomePlayer03",
 		"category"	: "home",
+		"fame"		: 3,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 400}, 
 						{"name" : "furniture", "value" : 15}, 
@@ -195,6 +206,7 @@ var BUILDINGS = [
 	{
 		"name"		: "HomePlayer04",
 		"category"	: "home",
+		"fame"		: 4,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 700}, 
 						{"name" : "furniture", "value" : 20}, 
@@ -207,6 +219,7 @@ var BUILDINGS = [
 	{
 		"name"		: "HomePlayer05",
 		"category"	: "home",
+		"fame"		: 5,
 		"time"		: 1300,
 		"costs"		: [	{"name" : "gold", "value" : 1100}, 
 						{"name" : "furniture", "value" : 25}, 
@@ -220,6 +233,7 @@ var BUILDINGS = [
 	{
 		"name"		: "HomePlayer06",
 		"category"	: "home",
+		"fame"		: 6,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1500}, 
 						{"name" : "furniture", "value" : 30}, 
@@ -233,6 +247,7 @@ var BUILDINGS = [
 	{
 		"name"  	: "Mill",
 		"category"	: "shop",
+		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
 						{"name" : "truss", "value" : 1}, 
@@ -245,6 +260,7 @@ var BUILDINGS = [
 	{
 		"name"  	: "Bakery",
 		"category"	: "shop",
+		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
 						{"name" : "truss", "value" : 1}, 
@@ -257,6 +273,7 @@ var BUILDINGS = [
 	{
 		"name"		: "PastryShop",
 		"category"	: "shop",
+		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
 						{"name" : "truss", "value" : 2}, 
@@ -269,6 +286,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Wainwrights",
 		"category"	: "shop",
+		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
 						{"name" : "truss", "value" : 1}, 
@@ -281,6 +299,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Joinery",
 		"category"	: "shop",
+		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
 						{"name" : "truss", "value" : 1}, 
@@ -293,6 +312,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Carpentry",
 		"category"	: "shop",
+		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
 						{"name" : "truss", "value" : 2}, 
@@ -305,6 +325,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Tavern",
 		"category"	: "shop",
+		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
 						{"name" : "truss", "value" : 1}, 
@@ -317,6 +338,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Inn",
 		"category"	: "shop",
+		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
 						{"name" : "truss", "value" : 1}, 
@@ -330,6 +352,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Hotel",
 		"category"	: "shop",
+		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
 						{"name" : "truss", "value" : 2}, 
@@ -343,6 +366,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Tannery",
 		"category"	: "shop",
+		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
 						{"name" : "truss", "value" : 1}, 
@@ -355,6 +379,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Saddlery",
 		"category"	: "shop",
+		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
 						{"name" : "truss", "value" : 1}, 
@@ -367,6 +392,7 @@ var BUILDINGS = [
 	{
 		"name"		: "CobblersShop",
 		"category"	: "shop",
+		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
 						{"name" : "truss", "value" : 2}, 
@@ -379,36 +405,42 @@ var BUILDINGS = [
 	{
 		"name"		: "Church",
 		"category"	: "church",
+		"fame"		: 20,
 		"time"		: 15000,
 		"costs"		: [{"name"  : "gold", "value" : 100}]
 	},
 	{
 		"name"		: "Cathedral",
 		"category"	: "church",
+		"fame"		: 50,
 		"time"		: 30000,
 		"costs"		: [{"name"  : "gold", "value" : 100}]
 	},
 	{
 		"name"		: "Duomo",
 		"category"	: "church",
+		"fame"		: 100,
 		"time"		: 45000,
 		"costs"		: [{"name"  : "gold", "value" : 100}]
 	},
 	{
 		"name"		: "Monastery",
 		"category"	: "church",
+		"fame"		: 50,
 		"time"		: 15000,
 		"costs"		: [{"name"  : "gold", "value" : 100}]
 	},
 	{
 		"name"		: "CommunityHall",
 		"category"	: "town",
+		"fame"		: 20,
 		"time"		: 3000,
 		"costs"		: [{"name"  : "gold", "value" : 100}]
 	},
 	{
 		"name"		: "TownHall",
 		"category"	: "town",
+		"fame"		: 50,
 		"time"		: 10000,
 		"costs"		: [{"name"  : "gold", "value" : 100}]
 	}
@@ -434,13 +466,22 @@ var CATEGORIES = ["home", "shop", "church", "town"];
 
 var JOBS = ["apprentice", "journeyman", "foreman"];
 
-var RESOURCES = ["gold", "wood", "crop", "flour", "bread", "cake", "cart", "furniture", "truss", "beer", "cow", "leather", "meat", "harness", "shoe", "stone", "tile", "brick", "sculpture", "iron", "gate", "tool", "weapon", "sheep", "freshmeat", "wool", "silk", "dyedwool", "dyedsilk", "fabrik", "cloth", "clothes", "herbs", "medicine"]; //TODO expensive clothes?
+var RESOURCES = [
+"gold", "wood", "cart", "furniture", "truss", "herbs", "medicine", 
+"crop", "flour", "bread", "cake", "beer", "freshmeat", "meat", 
+"cow", "leather", "harness", "shoe", "silk", "dyedsilk", "cloth", 
+"sheep", "wool", "dyedwool", "fabrik", "clothes", "iron", "tool", 
+"stone", "brick", "tile", "sculpture", "gate", "weapon"
+]; //TODO expensive clothes?
 
-//TODO
-var NO_SHOP = ["wood", "crop", "stone", "iron", "herbs", "silk"];
-var SHOP1 = ["flour", "cart", "beer", "cow", "tile", "sheep", "wool", "silk", "freshmeat", "leather"];
-var SHOP2 = ["bread", "furniture", "truss", "meat", "harness", "shoe", "brick", "gate", "tool", "weapon", "dyedwool", "dyedsilk", "fabrik"];
-var SHOP3 = ["cake", "sculpture", "cloth", "clothes", "medicine"];
+var GROUPED_RESOURCES = [
+["wood", "crop", "stone", "iron", "herbs", "silk"],
+["flour", "cart", "beer", "tile", "wool", "silk", "freshmeat", "leather"],
+["dyedwool", "bread", "furniture", "truss", "meat", "harness", "shoe", "brick", "tool"],
+["dyedsilk", "gate", "fabrik"],
+["cake", "clothes", "weapon"],
+["sculpture", "cloth", "medicine", "cow", "sheep"]
+];
 
 var MARKET = [];
 for (var i = 0; i < RESOURCES.length; i++) {
@@ -448,18 +489,20 @@ for (var i = 0; i < RESOURCES.length; i++) {
 	if (res.name !== "gold") {
 		var p = {};
 		p.name = res;
-		var tmp = isIn(res, NO_SHOP) ? 1 : (isIn(res,SHOP1) ? 2 : (isIn(res, SHOP2) ? 3 : (isIn(res, SHOP3) ? 4 : 5)));
-		p.time = tmp * 10;
+		var tmp = findGroupIndex(res) + 1;
+		p.time = tmp;
 		p.costs = [{"name" : "gold", "value" : tmp}];
 		MARKET.push(p);
 	}
 }
 
-function isIn(find, array) {
-	for (var i = 0; i < array.length; i++) {
-		if (find == array[i]) return true;
+function findGroupIndex(res) {
+	for (var i = 0; i < GROUPED_RESOURCES.length; i++) {
+		for (var j = 0; j < GROUPED_RESOURCES[i].length; j++) {
+			if (res == GROUPED_RESOURCES[i][j]) return i;
+		}
 	}
-	return false;
+	return -1;
 }
 
 
@@ -473,50 +516,73 @@ var START_CITY = new City("Village");
 var NO_FAMILIES = 4;
 
 var START_RESOURCES = [];
-for (var i = 0; i < NO_FAMILIES; i++) {
-	START_RESOURCES[i] = [];
-	for (var j = 0; j < RESOURCES.length; j++) {
-		var res = new Resource(RESOURCES[j]);
-		res.value = 500 + Math.floor(Math.random() * 500); //TODO
-		if (res.name == "gold") {res.value = 10000;}
-		START_RESOURCES[i].push(res);
-	}
+for (var j = 0; j < RESOURCES.length; j++) {
+	var res = new Resource(RESOURCES[j]);
+	res.value = getStartValue(res.name);
+	START_RESOURCES.push(res);
 }
 
-var START_FAMILIES = [];
-var START_PERSONS = [];
-for (var i = 0; i < NO_FAMILIES; i++) {
-	var family = new Family(START_RESOURCES[i], 0, START_CITY);
-	family.name = selectRandomlyFrom(FAMILY_NAMES);
-	family.power = 1;
-	START_FAMILIES[i] = family;
-	var noPersons = Math.floor(Math.random() * 5) + 1;
-	for (var j = 0; j < noPersons; j++) {
-		var startAge = Math.floor(Math.random() * YEAR * 15) + 15 * YEAR;
-		var person = createPerson(START_FAMILIES[i], startAge);
-		START_PERSONS.push(person);
+function getInfiniteResources() {
+	var array = [];
+	for (var i = 0; i < RESOURCES.length; i++) {
+		var res = new Resource(RESOURCES[i]);
+		res.value = Infinity;
+		array.push(res);
 	}
+	return array;
+}
+
+function getStartValue(name) {
+	switch (name) {
+		case "gold"		: return 10000;
+		case "bread"	: return 500;
+		case "cake"		: return 50;
+		case "beer"		: return 500;
+		case "shoe"		: return 50;
+		case "meat"		: return 500;
+		case "clothes"	: return 50;
+		default			: return 0;
+	}
+}
+"gold", "wood", "cart", "furniture", "truss", "herbs", "medicine", 
+"crop", "flour", "bread", "cake", "beer", "freshmeat", "meat", 
+"cow", "leather", "harness", "shoe", "silk", "dyedsilk", "cloth", 
+"sheep", "wool", "dyedwool", "fabrik", "clothes", "iron", "tool", 
+"stone", "brick", "tile", "sculpture", "gate", "weapon"
+
+
+var START_FAMILIES = [];
+START_FAMILIES[0] = createFamily(START_RESOURCES);
+for (var i = 1; i < NO_FAMILIES; i++) {
+	START_FAMILIES[i] = createFamily(getInfiniteResources());
 }
 
 function createPerson(family, startAge) {
 	var person = new Person(family);
 	person.age = startAge;
-	person.maxAge = Math.floor(Math.random() * YEAR * 30) + 50 * YEAR;
+	person.maxAge = Math.floor(Math.random() * YEAR * 20) + 50 * YEAR;
 	person.id = uid();
 	person.gender = Math.random() >= 0.5 ? "male" : "female";
 	person.name = person.gender == "male" ? selectRandomlyFrom(MALE_NAMES) : selectRandomlyFrom(FEMALE_NAMES);
 	return person;
 }
 
+function createFamily(startResources) {
+	var family = new Family(startResources, 0, START_CITY);
+	family.name = selectRandomlyFrom(FAMILY_NAMES);
+	family.power = 1;
+	var noPersons = Math.floor(Math.random() * 5) + 1;
+	for (var j = 0; j < noPersons; j++) {
+		var startAge = Math.floor(Math.random() * YEAR * 15) + 15 * YEAR;
+		var person = createPerson(family, startAge);
+	}
+	return family;
+}
+
 var START_BUILDINGS = [];
 for (var i = 0; i < NO_FAMILIES; i++) {
-	var name = i == 0 ? "HomePlayer01" : "HomePC01";
-	var home = getNewBuilding(name);
-	home.owner = START_FAMILIES[i];
-	START_FAMILIES[i].buildings.push(home);
-	for (var j = 0; j < START_FAMILIES[i].members.length; j++) {
-		home.addResident(START_FAMILIES[i].members[j]);
-	}
+	var owner = i == 0 ? "Player" : "PC";
+	var home = createFirstHomeForNewFamily(START_FAMILIES[i], owner);
 	var row = 5 + i;
 	var col = 4 + i % 3;
 	var building = {};
@@ -526,22 +592,65 @@ for (var i = 0; i < NO_FAMILIES; i++) {
 	START_BUILDINGS.push(building);
 }
 
+function createFirstHomeForNewFamily(family, owner) {
+	var name = owner == "Player" ? "HomePlayer01" : "HomePC01";
+	var home = getNewBuilding(name);
+	home.owner = family;
+	family.buildings.push(home);
+	for (var j = 0; j < family.members.length; j++) {
+		home.addResident(family.members[j]);
+	}
+	return home;
+}
+
 function selectRandomlyFrom(array) {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
 function getNewBuilding(name) {
-		var build;
-		for (var i = 0; i < BUILDINGS.length; i++) {
-			if ( BUILDINGS[i].name == name) {
-				build = BUILDINGS[i];
-				break;
-			}
-		}
-		switch (build.category) {
-			case "home"		: return new Home(build);
-			case "shop"		: return new Shop(build);
-			case "church"	: return new Church(build);
-			case "town"		: return new Town(build);
+	var build;
+	for (var i = 0; i < BUILDINGS.length; i++) {
+		if ( BUILDINGS[i].name == name) {
+			build = BUILDINGS[i];
+			break;
 		}
 	}
+	switch (build.category) {
+		case "home"		: return new Home(build);
+		case "shop"		: return new Shop(build);
+		case "church"	: return new Church(build);
+		case "town"		: return new Town(build);
+	}
+}
+
+formatYear = function (time) {
+	var years = Math.floor(time / YEAR);
+	if (years > 0) {
+		return years + "&nbsp;" + (years == 1 ? LAN.get("year") : LAN.get("years"));
+	}
+}
+
+format = function (time) {
+	return this.formatFancy(time, "year", "month", "day");
+}
+
+formatShort = function (time) {
+	return this.formatFancy(time, "y", "m", "d");
+}
+
+formatFancy = function (time, y, m, d) {
+	var years = Math.floor(time / YEAR);
+	var months = Math.floor((time - years * YEAR ) / MONTH);
+	var days = (time - years * YEAR - months * MONTH);
+	var text = "";
+	if (years > 0) {
+		text += years + "&nbsp;" + (years == 1 ? LAN.get(y) : LAN.get(y + "s")) + " ";
+	}
+	if (months > 0) {
+		text += months + "&nbsp;" + (months == 1 ? LAN.get(m) : LAN.get(m + "s")) + " ";
+	}
+	if (years + months == 0 || days > 0) {
+		text += days + "&nbsp;" + (days == 1 ? LAN.get(d) : LAN.get(d + "s"));
+	}
+	return text;
+}
