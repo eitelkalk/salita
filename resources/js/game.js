@@ -78,7 +78,7 @@
 	}
 	
 	this.eventLogged = function (event) {
-		//this.view.update(this.model);
+		this.view.update(this.model);
 	}
 	
 	this.registerButtonActions = function() {

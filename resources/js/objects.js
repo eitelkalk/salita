@@ -181,7 +181,7 @@ function Family(startResources, startTime, city) {
 			iDieNow.isAlive = false;
 			var index = this.members.indexOf(iDieNow);
 			this.members.splice(index, 1);
-			var event = new Result(this, this.city.time, "log-die", [iDieNow.name, formatYear(iDieNow.maxAge)]);
+			var event = new Result(this, this.city.time, "log-die-success", [iDieNow.name, formatYear(iDieNow.maxAge)]);
 		}
 		if (this.members.length == 0) {
 			setTimeout((function(){ gameOver(this); }).bind(this), 1000);
@@ -241,6 +241,7 @@ function City(name) {
 	this.time = 0;
 	this.families = [];
 	this.powerSum = 0;
+	this.buildings = []; //only buildings where the city is owner
 	
 	this.hasEnough = function (cost) {
 		//TODO
@@ -284,11 +285,6 @@ function City(name) {
 	
 	this.updateFamilyPowers = function () {
 		this.powerSum = 0;
-		this.families.sort(
-			function(a, b) {
-				return a.power - b.power;
-			}
-		);
 		for (var i = 0; i < this.families.length; i++) {
 			this.powerSum += this.families[i].power;
 		}

@@ -91,13 +91,14 @@ LAN.words["foreman"] = "Meister";
 LAN.words["journeyman"] = "Geselle";
 LAN.words["apprentice"] = "Lehrling";
 LAN.words["residents"] = "Bewohner";
+LAN.words["products"] = "Produkte:";
 LAN.words["none"] = "keine";
 LAN.words["free space"] = "freie Plätze";
 LAN.words["time"] = "Zeit";
 LAN.words["build"] = "Bauen";
 LAN.words["family-age"] = "Familienalter";
 LAN.words["city-age"] = "Stadtalter";
-LAN.words["family"] = "Familie";
+LAN.words["family-title"] = "Familie #1<br> Ruhm: #2 – Alter: #3";
 LAN.words["age"] = "Alter";
 LAN.words["gender"] = "Geschlecht";
 LAN.words["spouse"] = "Ehepartner";
@@ -122,14 +123,14 @@ LAN.words["log-sold-success"] = "#1&nbsp;#2 am Markt verkauft.";
 LAN.words["log-bought-success"] = "#1&nbsp;#2 am Markt gekauft.";
 LAN.words["log-sold-fail"] = "Verkauf von #1&nbsp;#2 am Markt fehlgeschlagen.";
 LAN.words["log-bought-fail"] = "Kauf von #1&nbsp;#2 am Markt fehlgeschlagen.";
-LAN.words["log-marriage-success"] = "#1 #2 und #3 #4 haben geheiratet. Die Mitgift von #5&nbsp;#6 wurde von der Familie #2 bezahlt.";
+LAN.words["log-marriage-success"] = "#1 heiratet #3 #4. Familie #2 bezahlt #5&nbsp;#6 als Mitgift.";
 LAN.words["log-marriage-fail"] = "#1 hat keinen passenden Partner gefunden.";
 LAN.words["log-marriage-denied"] = "#1 kann nicht heiraten, weil kein freies Haus verfügbar ist.";
 LAN.words["child"] = "Kind";
 LAN.words["beget-children"] = "Kinder zeugen";
 LAN.words["log-children-denied"] = "#1 und #2 können keine Kinder zeugen, weil kein freies Haus verfügbar ist.";
 LAN.words["log-children-too-old"] = "#1 und #2 können keine Kinder mehr zeugen. Sie sind zu alt.";
-LAN.words["log-children-success"] = "#1 erblickt das Licht der Welt.";
+LAN.words["log-children-success"] = "#1 ist erwachsen und will der Familie helfen.";
 LAN.words["works-as-at"] = "Arbeitet als #1 in: #2";
 LAN.words["educate"] = "Ausbilden";
 LAN.words["log-educate-success"] = "#3: #1 wurde als #2 eingestellt.";
@@ -139,10 +140,13 @@ LAN.words["log-produce-success"] = "#1&nbsp;#2 in #3 produziert.";
 LAN.words["log-produce-denial"] = "Zur Produktion benötigst du einen Meister, genügend Rohstoffe und du musst die Arbeiter bezahlen können.";
 LAN.words["log-building-success"] = "#1 wurde gebaut.";
 LAN.words["log-building-fail"] = "Bau von #1 wurde abgebrochen.";
-LAN.words["log-new-family"] = "Die Familie #1 ist in die Stadt gezogen.";
+LAN.words["log-new-family-success"] = "Die Familie #1 ist in die Stadt gezogen.";
 LAN.words["game-over"] = "Das Spiel ist vorbei. Die Familie #1 kann nicht fortbestehen. Du hast sie zu #2 Ruhm geführt.";
-LAN.words["log-die"] = "#1 starb im Alter von #2n";
+LAN.words["log-die-success"] = "#1 starb im Alter von #2n";
+LAN.words["log-produce-not-owner"] = "Zum Produzieren musst du Besitzer des Gebäudes sein.";
 LAN.words["log"] = "Jahr #1: #2";
+LAN.words["info-build"] = "Zum Bauen einen freien Bauplatz auf der Karte per Mausklick auswählen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC drücken.";
+LAN.words["info-educate"] = "Zum Ausbilden ein Produktionsgebäude auf der Karte per Mausklick auswählen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC drücken.";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -400,7 +404,7 @@ var BUILDINGS = [
 						{"name" : "brick", "value" : 1000}, 
 						{"name" : "gate", "value" : 1}],
 		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
-		"products"	: [{"name" : "shoe", "value" : 10, "costs": [{"name" : "", "value" : 100}]}]
+		"products"	: [{"name" : "shoe", "value" : 10, "costs": [{"name" : "leather", "value" : 100}]}]
 	},
 	{
 		"name"		: "Church",
@@ -552,7 +556,7 @@ function getStartValue(name) {
 
 
 var START_FAMILIES = [];
-START_FAMILIES[0] = createFamily(START_RESOURCES);
+START_FAMILIES[0] = createFamily(START_RESOURCES, 2);
 for (var i = 1; i < NO_FAMILIES; i++) {
 	START_FAMILIES[i] = createFamily(getInfiniteResources());
 }
@@ -567,11 +571,11 @@ function createPerson(family, startAge) {
 	return person;
 }
 
-function createFamily(startResources) {
+function createFamily(startResources, noPersons) {
+	noPersons = noPersons || Math.floor(Math.random() * 5) + 1;
 	var family = new Family(startResources, 0, START_CITY);
 	family.name = selectRandomlyFrom(FAMILY_NAMES);
 	family.power = 1;
-	var noPersons = Math.floor(Math.random() * 5) + 1;
 	for (var j = 0; j < noPersons; j++) {
 		var startAge = Math.floor(Math.random() * YEAR * 15) + 15 * YEAR;
 		var person = createPerson(family, startAge);
@@ -625,9 +629,7 @@ function getNewBuilding(name) {
 
 formatYear = function (time) {
 	var years = Math.floor(time / YEAR);
-	if (years > 0) {
-		return years + "&nbsp;" + (years == 1 ? LAN.get("year") : LAN.get("years"));
-	}
+	return years + "&nbsp;" + (years == 1 ? LAN.get("year") : LAN.get("years"));
 }
 
 format = function (time) {

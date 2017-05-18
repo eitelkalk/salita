@@ -29,7 +29,7 @@
 			}
 		}
 		
-		var result = new Result(this.getPlayerFamily(), this.city.time, "log-new-family", [this.getPlayerFamily().name]);
+		var result = new Result(this.getPlayerFamily(), this.city.time, "log-new-family-success", [this.getPlayerFamily().name]);
 		this.log(result);
 	}
 	
@@ -67,11 +67,10 @@
 		var probability = cityPower / (YEAR) * (time / YEAR); //TODO
 		if (Math.random() < probability) {
 			var family = createFamily(getInfiniteResources());
-			this.families.push(family);
 			var house = createFirstHomeForNewFamily(family, "PC");
 			var coords = this.map.getFreeRandomTile();
 			this.map.set(house, coords[0], coords[1]);
-			var result = new Result(family, this.city.time, "log-new-family", [family.name], 0);
+			var result = new Result(family, this.city.time, "log-new-family-success", [family.name], 0);
 			this.log(result);
 		}
 	}
@@ -86,7 +85,6 @@
 		}
 	}
 	
-	
 	this.performRandomAction = function (family) {
 		var familyShops = this.getBuildings(family.buildings, "shop");
 		var producers = this.getShopsThatCanProduceFor(familyShops, family);	
@@ -95,10 +93,22 @@
 		var members = this.getMarriageWantingMembers(family);
 
 		var actions = ["build", "none"];
-		if (family.hasAFreeHome() && members.length > 0) { actions.push("marry"); }
-		if (possibleMoms.length > 0) { actions.push("beget"); }
-		if (allTheShops.length > 0) { actions.push("educate"); }
-		if (producers.length > 0) { actions.push("produce"); }
+		if (family.hasAFreeHome() && members.length > 0) { 
+			actions.push("marry");
+		}
+		if (possibleMoms.length > 0) {
+			actions.push("beget");
+		}
+		if (allTheShops.length > 0) {
+			for (var i = 0; i < family.members.length; i++) {
+				actions.push("educate");
+			}
+		}
+		if (producers.length > 0) {
+			for (var i = 0; i < familyShops.length; i++) {
+				actions.push("produce");
+			}
+		}
 		switch (selectRandomlyFrom(actions)) {
 			case "produce" :
 				return this.simulateProduction(family, producers);
@@ -313,7 +323,7 @@
 		if (person.family.hasAFreeHome()) {
 			var spouse = this.findSuitableSpouse(person);
 			if ("undefined" === typeof spouse) {
-				return new Result(person.family, this.city.time, "log-marriage-fail", [person.name + " " + person.family.name]);
+				return new Result(person.family, this.city.time, "log-marriage-fail", [person.name]);
 			} else {
 				var family = spouse.family;
 				var cost = this.marriageCosts(family, person.family);

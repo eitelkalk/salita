@@ -32,7 +32,7 @@
 	
 	this.update = function (model) {
 		this.drawMap(model.map);
-		this.drawResources(model.getPlayerFamily().resources);
+		this.drawResources(model.getPlayerFamily());
 		this.drawBuildingScreen(model.possibleBuildings, model);
 		this.drawMarket(model.market);
 		this.drawPersons(model.getPlayerFamily());
@@ -53,20 +53,26 @@
 			var event = model.logger[i];
 			var year = Math.floor(event.cityTime / YEAR);
 			var text = LAN.get("log", [year, LAN.get(event.text, event.args)]);
-			var color = this.getLoggerColor(event, model, text);
-			logger.innerHTML += "<p title='" + event.family.name + "' style='color:" + color + "'>" + text + "</p>";
+			var p = document.createElement("p");
+			p.title = event.family.name;
+			p.style.color = this.getLoggerColor(event, model, text);
+			p.innerHTML = text;
+			logger.appendChild(p);// += "<p title='" + event.family.name + "' style='color:" + color + "'>" + text + "</p>";
 		}
 	}
 	
 	this.getLoggerColor = function (event, model, text) {
+		if (!event.text.includes("success")) {
+			return "#f08080";
+		}
 		if (event.family == model.getPlayerFamily()) {
 			return "#faf8ef";
 		}
 		if (event.family == model.city) {
 			return "#faf8ef";
 		}
-		if (text.includes(model.getPlayerFamily().nema)) {
-			return "faf8ef";
+		if (text.includes(model.getPlayerFamily().name)) {
+			return "#faf8ef";
 		}
 		return "black";
 	}
@@ -181,15 +187,16 @@
 			var text = "";
 			for (var j = 0; j < product.costs.length; j++) {
 				var cost = product.costs[j];
-				text += ", " + cost.value + " " + LAN.get(cost.name);
+				text += ", " + cost.value + "\u00A0" + LAN.get(cost.name);
 			}
 			text = text.replace(", ", "");
 			div.appendChild(document.createTextNode(text));
 			var produceButton = document.createElement("a");
 			produceButton.innerHTML = "-\>"; //TODO
+			produceButton.title = LAN.get("produce");
 			div.appendChild(produceButton);
 			produceButtons[i] = produceButton;
-			div.appendChild(document.createTextNode(LAN.get(product.name)));
+			div.appendChild(document.createTextNode(product.value + "\u00A0" + LAN.get(product.name)));
 			div.appendChild(document.createElement("br"));
 		}
 		
@@ -275,6 +282,18 @@
 			costDiv.innerHTML = LAN.get(cost.name) + ": " + cost.value;
 			div.appendChild(costDiv);
 		}
+
+		//TODO effects
+		if (!("undefined" === typeof building.products)) {
+			div.appendChild(document.createTextNode(LAN.get("products")));
+			for (var i = 0; i < building.products.length; i++) {
+				var product = building.products[i];
+				var pDiv = document.createElement("div");
+				pDiv.className = "building-cost";
+				pDiv.innerHTML = LAN.get(product.name);
+				div.appendChild(pDiv);
+			}
+		}
 		
 		var button = document.createElement("a");
 		button.id = "build-" + building.name;
@@ -301,7 +320,8 @@
 		}
 	}
 	
-	this.drawResources = function (resources) {
+	this.drawResources = function (family) {
+		var resources = family.resources;
 		var motherDiv = document.getElementById("resources");
 		motherDiv.innerHTML = "";
 		
@@ -310,9 +330,17 @@
 			var div = document.createElement("div");
 			div.id = 'res-' + res.name;
 			div.className = 'resource';
+			//div.style.color = this.getColorForResource(family, res);
 			div.innerHTML = LAN.get(res.name) + ": " + res.value;
 			motherDiv.appendChild(div);
 		}
+	}
+	
+	this.getColorForResource = function (family, resource) {
+		var val = resource.value / family.members.length / 5;
+		if (val <= 10) {return "#f08080";}
+		if (val <= 100) {return "#ff8c00";}
+		return "white";
 	}
 	
 	this.drawPersons = function (family) {
@@ -323,7 +351,7 @@
 		
 		var title = document.createElement("p");
 		title.style.fontSize = "x-large";
-		title.innerHTML = LAN.get("family") + " " + family.name + ", " + LAN.get("age") + ": " + format(family.time);
+		title.innerHTML = LAN.get("family-title", [family.name, family.power, formatYear(family.time)]);
 		div.appendChild(title);
 		
 		for (var i = 0; i < persons.length; i++) {

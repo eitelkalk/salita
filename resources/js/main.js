@@ -75,6 +75,9 @@ function build(name) {
 	var button = document.getElementById('map-button');
 	showContent(button);
 	game.queuedBuilding = name;
+	var info = document.getElementById("info-text");
+	info.innerHTML = LAN.get("info-build");
+	info.style.display = "block";
 	view.highlight = true;
 }
 
@@ -100,13 +103,17 @@ function educate(person) {
 	showContent(button);
 	game.queuedPerson = person;
 	view.highlight = true;
+	var info = document.getElementById("info-text");
+	info.innerHTML = LAN.get("info-educate");
+	info.style.display = "block";
 }
 
 function produce(building, product) {
 	if (building.owner == model.getPlayerFamily()) {
 		game.produce(building, product);
+	} else {
+		model.log(new Result(model.getPlayerFamily(), model.city.time, "log-produce-not-owner"));
 	}
-	//TODO error message or... ???
 }
 
 function fireProductChanged(product, value) {
@@ -119,6 +126,8 @@ function gameOver(family) {
 
 function showContent(button) {
 	game.hideInfo();
+	var info = document.getElementById("info-text");
+	info.style.display = "none";
 	game.showContent(button);
 }
 
@@ -158,6 +167,7 @@ Keyboard.B  = 66;
 Keyboard.M  = 77;
 Keyboard.H  = 72;
 Keyboard.I  = 73;
+Keyboard.ESC = 27;
 
 Keyboard.left  = function (key) { return Keyboard.LEFT.indexOf(key)  !== -1; }
 Keyboard.right = function (key) { return Keyboard.RIGHT.indexOf(key) !== -1; }
@@ -198,9 +208,26 @@ function switchMenu(keyCode) {
 	}
 }
 
+function abort(keyCode) {
+	if (keyCode == Keyboard.ESC) {
+		abortEverything();
+	}
+}
+
+function abortEverything() {
+	game.hideInfo();
+	document.getElementById("info-text").style.display = "none";
+	game.queuedBuilding = "";
+	game.queuedPerson = "";
+	view.highlight = false;
+	view.update(model);
+}
+
 document.onkeydown = function(event) {
 	move(event.keyCode);
 	switchMenu(event.keyCode);
+	abort(event.keyCode);
+	view.highlight = false;
 }
 
 document.getElementById('map').onmouseup = function(event) {
@@ -219,7 +246,8 @@ document.getElementById('map').onmouseup = function(event) {
 		game.educate(game.queuedPerson, building);
 	} else {
 		game.toggleInfo(coords[0], coords[1]);
-		//TODO produce or assign family members or...
+		var info = document.getElementById("info-text");
+		info.style.display = "none";
 	}
 }
 
@@ -231,6 +259,9 @@ document.getElementById("map").onmousemove = function(event) {
 	if (view.highlight) {
 		view.drawMap(model.map);
 	}
+}
+document.getElementById("info-text").onmouseenter = function(event) {
+	document.getElementById("info-text").style.display = "none";
 }
 
 //bind window events to game
