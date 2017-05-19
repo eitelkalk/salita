@@ -38,6 +38,30 @@ LAN.words["Hotel"] = "Hotel";
 LAN.words["Tannery"] = "Gerberei";
 LAN.words["Saddlery"] = "Sattlerei";
 LAN.words["CobblersShop"] = "Schusterei";
+LAN.words["Masonry"] = "Maurerei";
+LAN.words["Stonecarver"] = "Steinmetzhof";
+LAN.words["Sculptor"] = "Bildhauer";
+LAN.words["Locksmith"] = "Schlosserei";
+LAN.words["Toolsmith"] = "Werkzeugschmiede";
+LAN.words["Blacksmith"] = "Schmiede";
+LAN.words["Livestock"] = "Viehzucht";
+LAN.words["Slaughterhouse"] = "Schlachthaus";
+LAN.words["Butcher"] = "Metzgerei";
+LAN.words["Weaver"] = "Weberei";
+LAN.words["Tailor"] = "Schneiderei";
+LAN.words["Dyework"] = "Färberei";
+LAN.words["Farmacy"] = "Apotheke";
+LAN.words["Doctor"] = "Praxis";
+LAN.words["Hospital"] = "Spital";
+LAN.words["ExchangeOffice"] = "Wechselstube";
+LAN.words["Moneylender"] = "Geldverleih";
+LAN.words["Bank"] = "Bank";
+LAN.words["ClothMill"] = "Tuchfabrik";
+LAN.words["Clothier"] = "Tuchhandel";
+LAN.words["Mercer"] = "Stoffhandel";
+LAN.words["LawOffice"] = "Kanzlei";
+LAN.words["Notary"] = "Notariat";
+LAN.words["Court"] = "Gericht";
 LAN.words["Church"] = "Kirche";
 LAN.words["Cathedral"] = "Kathedrale";
 LAN.words["Duomo"] = "Dom";
@@ -82,6 +106,7 @@ LAN.words["cloth"] = "Tuch";
 LAN.words["clothes"] = "Kleidung";
 LAN.words["herbs"] = "Kräuter";
 LAN.words["medicine"] = "Medizin";
+LAN.words["health"] = "Gesundheit";
 LAN.words["male"] = "männlich";
 LAN.words["female"] = "weiblich";
 LAN.words["foremen"] = "Meister";
@@ -351,7 +376,7 @@ var BUILDINGS = [
 						{"name" : "brick", "value" : 500}, 
 						{"name" : "gate", "value" : 1}],
 		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
-		"products"	: [] //TODO
+		"products"	: [] //TODO health? happiness?
 	},
 	{
 		"name"		: "Hotel",
@@ -405,6 +430,322 @@ var BUILDINGS = [
 						{"name" : "gate", "value" : 1}],
 		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
 		"products"	: [{"name" : "shoe", "value" : 10, "costs": [{"name" : "leather", "value" : 100}]}]
+	},
+	{
+		"name"		: "Masonry",
+		"category"	: "shop",
+		"fame"		: 6,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [{"name" : "tile", "value" : 100, "costs": [{"name" : "stone", "value" : 100}]}]
+	},
+	{
+		"name"		: "Stonecarver",
+		"category"	: "shop",
+		"fame"		: 7,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [{"name" : "brick", "value" : 100, "costs": [{"name" : "stone", "value" : 100}]}]
+	},
+	{
+		"name"		: "Sculptor",
+		"category"	: "shop",
+		"fame"		: 8,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [{"name" : "sculpture", "value" : 1, "costs": [{"name" : "stone", "value" : 50}]}]
+	},
+	{
+		"name"		: "Locksmith",
+		"category"	: "shop",
+		"fame"		: 6,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [{"name" : "gate", "value" : 10, "costs": [{"name" : "iron", "value" : 100}]}]
+	},
+	{
+		"name"		: "Toolsmith",
+		"category"	: "shop",
+		"fame"		: 7,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [{"name" : "tool", "value" : 50, "costs": [{"name" : "iron", "value" : 100}]}]
+	},
+	{
+		"name"		: "Blacksmith",
+		"category"	: "shop",
+		"fame"		: 8,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [{"name" : "weapon", "value" : 20, "costs": [{"name" : "iron", "value" : 100}]}]
+	},
+	{
+		"name"		: "Livestock",
+		"category"	: "shop",
+		"fame"		: 6,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [	{"name" : "cow", "value" : 2, "costs": [{"name" : "crop", "value" : 100}]}, 
+						{"name" : "sheep", "value" : 4, "costs": [{"name" : "crop", "value" : 100}]},
+						{"name" : "wool", "value" : 100, "costs": [{"name" : "sheep", "value" : 1}]}]
+	},
+	{
+		"name"		: "Slaughterhouse",
+		"category"	: "shop",
+		"fame"		: 7,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [{"name" : "freshmeat", "value" : 100, "costs": [{"name" : "cow", "value" : 1}]}]
+	},
+	{
+		"name"		: "Butcher",
+		"category"	: "shop",
+		"fame"		: 8,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [{"name" : "meat", "value" : 100, "costs": [{"name" : "freshmeat", "value" : 100}]}]
+	},
+	{
+		"name"		: "Weaver",
+		"category"	: "shop",
+		"fame"		: 6,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [{"name" : "fabrik", "value" : 20, "costs": [{"name" : "dyedwool", "value" : 100}]}]
+	},
+	{
+		"name"		: "Tailor",
+		"category"	: "shop",
+		"fame"		: 7,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [	{"name" : "clothes", "value" : 10, "costs": [{"name" : "fabrik", "value" : 20}]}, 
+						{"name" : "clothes", "value" : 10, "costs": [{"name" : "cloth", "value" : 20}]}]
+	},
+	{
+		"name"		: "Dyework",
+		"category"	: "shop",
+		"fame"		: 8,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [	{"name" : "dyedsilk", "value" : 100, "costs": [{"name" : "silk", "value" : 100}]}, 
+						{"name" : "dyedwool", "value" : 100, "costs": [{"name" : "wool", "value" : 100}]}]
+	},
+	{
+		"name"		: "Farmacy",
+		"category"	: "shop",
+		"fame"		: 9,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [{"name" : "medicine", "value" : 5, "costs": [{"name" : "herbs", "value" : 100}]}]
+	},
+	{
+		"name"		: "Doctor",
+		"category"	: "shop",
+		"fame"		: 10,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [{"name" : "health", "value" : 1, "costs": [{"name" : "medicine", "value" : 10}]}]
+	},
+	{
+		"name"		: "Hospital",
+		"category"	: "shop",
+		"fame"		: 12,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [{"name" : "health", "value" : 5, "costs": [{"name" : "", "value" : 10}]}]
+	},
+	{
+		"name"		: "ExchangeOffice",
+		"category"	: "shop",
+		"fame"		: 9,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [{"name" : "gold", "value" : 105, "costs": [{"name" : "gold", "value" : 100}]}]
+	},
+	{
+		"name"		: "Moneylender",
+		"category"	: "shop",
+		"fame"		: 10,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [{"name" : "gold", "value" : 110, "costs": [{"name" : "gold", "value" : 100}]}]
+	},
+	{
+		"name"		: "Bank",
+		"category"	: "shop",
+		"fame"		: 12,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [{"name" : "gold", "value" : 115, "costs": [{"name" : "gold", "value" : 100}]}]
+	},
+	{
+		"name"		: "ClothMill",
+		"category"	: "shop",
+		"fame"		: 9,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [{"name" : "cloth", "value" : 10, "costs": [{"name" : "dyedsilk", "value" : 100}]}]
+	},
+	{
+		"name"		: "Clothier",
+		"category"	: "shop",
+		"fame"		: 10,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [{"name" : "gold", "value" : 120, "costs": [{"name" : "cloth", "value" : 100}]}]
+	},
+	{
+		"name"		: "Mercer",
+		"category"	: "shop",
+		"fame"		: 12,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [{"name" : "gold", "value" : 115, "costs": [{"name" : "fabrik", "value" : 100}]}]
+	},
+	{
+		"name"		: "LawOffice",
+		"category"	: "shop",
+		"fame"		: 9,
+		"time"		: 1200,
+		"costs"		: [	{"name" : "gold", "value" : 100},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 100}, 
+						{"name" : "brick", "value" : 300}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 2}, {"name" : "journeyman", "max" : 1}, {"name" : "foreman", "max" : 1}],
+		"products"	: [] //TODO fame?
+	},
+	{
+		"name"		: "Notary",
+		"category"	: "shop",
+		"fame"		: 10,
+		"time"		: 1500,
+		"costs"		: [	{"name" : "gold", "value" : 500},
+						{"name" : "truss", "value" : 1}, 
+						{"name" : "tile", "value" : 200}, 
+						{"name" : "brick", "value" : 500}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 8}, {"name" : "journeyman", "max" : 4}, {"name" : "foreman", "max" : 2}],
+		"products"	: [] //TODO
+	},
+	{
+		"name"		: "Court",
+		"category"	: "shop",
+		"fame"		: 12,
+		"time"		: 1800,
+		"costs"		: [	{"name" : "gold", "value" : 1000},
+						{"name" : "truss", "value" : 2}, 
+						{"name" : "tile", "value" : 400}, 
+						{"name" : "brick", "value" : 1000}, 
+						{"name" : "gate", "value" : 1}],
+		"jobs"		: [{"name" : "apprentice", "max" : 16}, {"name" : "journeyman", "max" : 8}, {"name" : "foreman", "max" : 4}],
+		"products"	: [] //TODO
 	},
 	{
 		"name"		: "Church",
@@ -475,7 +816,7 @@ var RESOURCES = [
 "crop", "flour", "bread", "cake", "beer", "freshmeat", "meat", 
 "cow", "leather", "harness", "shoe", "silk", "dyedsilk", "cloth", 
 "sheep", "wool", "dyedwool", "fabrik", "clothes", "iron", "tool", 
-"stone", "brick", "tile", "sculpture", "gate", "weapon"
+"stone", "brick", "tile", "sculpture", "gate", "weapon", "health"
 ]; //TODO expensive clothes?
 
 var GROUPED_RESOURCES = [
@@ -490,7 +831,7 @@ var GROUPED_RESOURCES = [
 var MARKET = [];
 for (var i = 0; i < RESOURCES.length; i++) {
 	var res = RESOURCES[i];
-	if (res.name !== "gold") {
+	if (res.name !== "gold" && res.name !== "health") {
 		var p = {};
 		p.name = res;
 		var tmp = findGroupIndex(res) + 1;
@@ -548,12 +889,6 @@ function getStartValue(name) {
 		default			: return 0;
 	}
 }
-"gold", "wood", "cart", "furniture", "truss", "herbs", "medicine", 
-"crop", "flour", "bread", "cake", "beer", "freshmeat", "meat", 
-"cow", "leather", "harness", "shoe", "silk", "dyedsilk", "cloth", 
-"sheep", "wool", "dyedwool", "fabrik", "clothes", "iron", "tool", 
-"stone", "brick", "tile", "sculpture", "gate", "weapon"
-
 
 var START_FAMILIES = [];
 START_FAMILIES[0] = createFamily(START_RESOURCES, 2);

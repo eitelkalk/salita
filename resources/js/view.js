@@ -536,6 +536,7 @@
 	
 	this.showGameOverScreen = function (family) {
 		var div = document.getElementById("game-over");
+		div.innerHTML = "";
 		div.style.display = "block";
 		var title = document.createElement("h1");
 		title.innerHTML = "Salita";
