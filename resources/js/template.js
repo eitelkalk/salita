@@ -72,6 +72,9 @@ LAN.words["home"] = "Wohngeb채ude";
 LAN.words["shop"] = "Produktionsgeb채ude";
 LAN.words["church"] = "Kirche";
 LAN.words["town"] = "Verwaltungsgeb채ude";
+LAN.words["minori"] = "Arti minori";
+LAN.words["mediane"] = "Arti mediane";
+LAN.words["maggiori"] = "Arti maggiori";
 LAN.words["gold"] = "Gold";
 LAN.words["wood"] = "Holz";
 LAN.words["crop"] = "Getreide";
@@ -172,6 +175,7 @@ LAN.words["log-produce-not-owner"] = "Zum Produzieren musst du Besitzer des Geb�
 LAN.words["log"] = "Jahr #1: #2";
 LAN.words["info-build"] = "Zum Bauen einen freien Bauplatz auf der Karte per Mausklick ausw채hlen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC dr체cken.";
 LAN.words["info-educate"] = "Zum Ausbilden ein Produktionsgeb채ude auf der Karte per Mausklick ausw채hlen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC dr체cken.";
+LAN.words["fame"] = "Ruhm";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -276,6 +280,7 @@ var BUILDINGS = [
 	{
 		"name"  	: "Mill",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -289,6 +294,7 @@ var BUILDINGS = [
 	{
 		"name"  	: "Bakery",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -302,6 +308,7 @@ var BUILDINGS = [
 	{
 		"name"		: "PastryShop",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -315,6 +322,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Wainwrights",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -328,6 +336,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Joinery",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -341,6 +350,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Carpentry",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -354,6 +364,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Tavern",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -367,6 +378,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Inn",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -381,6 +393,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Hotel",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -395,6 +408,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Tannery",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 3,
 		"time"		: 300,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -408,6 +422,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Saddlery",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 4,
 		"time"		: 600,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -421,6 +436,7 @@ var BUILDINGS = [
 	{
 		"name"		: "CobblersShop",
 		"category"	: "shop",
+		"subcat"	: "minori",
 		"fame"		: 5,
 		"time"		: 900,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -434,6 +450,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Masonry",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 6,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -447,6 +464,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Stonecarver",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 7,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -460,6 +478,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Sculptor",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 8,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -473,6 +492,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Locksmith",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 6,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -486,6 +506,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Toolsmith",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 7,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -499,6 +520,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Blacksmith",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 8,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -512,6 +534,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Livestock",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 6,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -527,6 +550,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Slaughterhouse",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 7,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -540,6 +564,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Butcher",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 8,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -553,6 +578,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Weaver",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 6,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -566,6 +592,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Tailor",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 7,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -580,6 +607,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Dyework",
 		"category"	: "shop",
+		"subcat"	: "mediane",
 		"fame"		: 8,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -594,6 +622,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Farmacy",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 9,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -607,6 +636,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Doctor",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 10,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -620,6 +650,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Hospital",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 12,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -633,6 +664,7 @@ var BUILDINGS = [
 	{
 		"name"		: "ExchangeOffice",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 9,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -646,6 +678,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Moneylender",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 10,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -659,6 +692,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Bank",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 12,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -672,6 +706,7 @@ var BUILDINGS = [
 	{
 		"name"		: "ClothMill",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 9,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -685,6 +720,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Clothier",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 10,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -698,6 +734,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Mercer",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 12,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -711,6 +748,7 @@ var BUILDINGS = [
 	{
 		"name"		: "LawOffice",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 9,
 		"time"		: 1200,
 		"costs"		: [	{"name" : "gold", "value" : 100},
@@ -724,6 +762,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Notary",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 10,
 		"time"		: 1500,
 		"costs"		: [	{"name" : "gold", "value" : 500},
@@ -737,6 +776,7 @@ var BUILDINGS = [
 	{
 		"name"		: "Court",
 		"category"	: "shop",
+		"subcat"	: "maggiori",
 		"fame"		: 12,
 		"time"		: 1800,
 		"costs"		: [	{"name" : "gold", "value" : 1000},
@@ -808,6 +848,7 @@ for (var i = 0; i < length; i++) {
 }
 
 var CATEGORIES = ["home", "shop", "church", "town"];
+var SUB_CATEGORIES = ["minori", "mediane", "maggiori"];
 
 var JOBS = ["apprentice", "journeyman", "foreman"];
 

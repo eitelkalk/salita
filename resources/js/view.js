@@ -239,6 +239,7 @@
 		
 		var buildable = [];
 		var nextCategoryIndex = 0;
+		var nextSubCategoryIndex = 0;
 		for (var i = 0; i < buildings.length; i++) {
 			var building = buildings[i];
 			if (nextCategoryIndex < CATEGORIES.length && CATEGORIES[nextCategoryIndex] == building.category) {
@@ -247,7 +248,13 @@
 				motherDiv.appendChild(title);
 				nextCategoryIndex++;
 			}
-			var div = this.createBuildingDiv(building);
+			if (building.category == "shop" && nextSubCategoryIndex < SUB_CATEGORIES.length && SUB_CATEGORIES[nextSubCategoryIndex] == building.subcat) {
+				var title = document.createElement("h4");
+				title.innerHTML = LAN.get(SUB_CATEGORIES[nextSubCategoryIndex]);
+				motherDiv.appendChild(title);
+				nextSubCategoryIndex++;
+			}
+			var div = this.createBuildingDiv(model.getPlayerFamily(), building);
 			motherDiv.appendChild(div);
 			buildable[i] = model.canBeBuiltByPlayer(building);
 		}
@@ -256,7 +263,7 @@
 		this.addOnClickEvents(buttons, buildable, buildings.map(function(b) {return b.name;}));
 	}
 	
-	this.createBuildingDiv = function (building) {
+	this.createBuildingDiv = function (family, building) {
 		var div = document.createElement("div");
 		div.className = "building";
 		var title = document.createElement("div");
@@ -270,30 +277,45 @@
 		div.appendChild(image);
 		
 		
+		var costs = document.createElement("div");
+		costs.style.display = "inline-block";
+		costs.style.verticalAlign = "top";
+		
 		var time = document.createElement("div");
 		time.className = "building-cost";
 		time.innerHTML = LAN.get("time") + ": " + formatShort(building.time);
-		div.appendChild(time);
+		costs.appendChild(time);
 		
 		for (var i = 0; i < building.costs.length; i++) {
 			var cost = building.costs[i];
 			var costDiv = document.createElement("div");
+			costDiv.style.color = family.hasEnough(cost) ? "white" : "#f08080";
 			costDiv.className = "building-cost";
 			costDiv.innerHTML = LAN.get(cost.name) + ": " + cost.value;
-			div.appendChild(costDiv);
+			costs.appendChild(costDiv);
 		}
+		div.appendChild(costs);
 
 		//TODO effects
+		var effects = document.createElement("div");
+		effects.style.display = "inline-block";
+		effects.style.marginLeft = "5px";
+		effects.style.verticalAlign = "top";
+		
+		effects.appendChild(document.createTextNode(LAN.get("fame") + ": +" + building.fame));
+		
 		if (!("undefined" === typeof building.products)) {
-			div.appendChild(document.createTextNode(LAN.get("products")));
+			effects.appendChild(document.createTextNode(LAN.get("products")));
 			for (var i = 0; i < building.products.length; i++) {
 				var product = building.products[i];
 				var pDiv = document.createElement("div");
 				pDiv.className = "building-cost";
 				pDiv.innerHTML = LAN.get(product.name);
-				div.appendChild(pDiv);
+				effects.appendChild(pDiv);
 			}
 		}
+		
+		div.appendChild(effects);
 		
 		var button = document.createElement("a");
 		button.id = "build-" + building.name;
@@ -331,7 +353,7 @@
 			div.id = 'res-' + res.name;
 			div.className = 'resource';
 			//div.style.color = this.getColorForResource(family, res);
-			div.innerHTML = LAN.get(res.name) + ": " + res.value;
+			div.innerHTML = LAN.get(res.name) + ": " + res.value.toLocaleString();
 			motherDiv.appendChild(div);
 		}
 	}
