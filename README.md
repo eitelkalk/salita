@@ -30,6 +30,6 @@ _“This art is free for all to use without restriction, but partial artistic cred
 
 
 ## License
-I license all the work under `/resources/images/` under [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Attribution goes to eitelkalk and to the authors of the original work mentioned above if you juse (part of) their work. The full license text can be found in `/license/`.
+I license all the work under `/resources/images/` under [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Attribution goes to eitelkalk and to the authors of the original work mentioned above if you use (part of) their work. The full license text can be found in `/license/`.
 
 Further, I license the software under the MIT License, which can be found in `LICENSE.TXT`.
