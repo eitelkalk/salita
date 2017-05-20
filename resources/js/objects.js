@@ -185,7 +185,7 @@ function Family(startResources, startTime, city) {
 			this.model.log(event);
 		}
 		if (this.members.length == 0) {
-			setTimeout((function(){ gameOver(this); }).bind(this), 1000);
+			gameOver(this);
 		}
 	}
 	

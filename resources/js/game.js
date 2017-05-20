@@ -74,6 +74,7 @@
 		this.registerButtonActions();
 		this.model.init();
 		this.showContent(document.getElementById("map-button"));
+		this.view.init();
 		this.view.update(this.model);
 	}
 	

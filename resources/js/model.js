@@ -9,14 +9,29 @@
 	
 	this.init = function () {
 		//TODO load stored data
-		this.city = START_CITY;
-		this.families = START_FAMILIES;
-		this.market = MARKET;
-		
+		var localDataStored = false;
+		if (localDataStored) {
+			this.loadData();
+		} else {
+			this.initNewData();
+		}
+		var result = new Result(this.getPlayerFamily(), this.city.time, "log-new-family-success", [this.getPlayerFamily().name]);
+		this.log(result);
+	}
+	
+	this.loadData = function () {
+		//TODO
+	}
+	
+	this.initNewData = function () {
+		this.city = new City("Village");
+		this.families = this.createStartFamilies(4);
 		for (var i = 0; i < this.families.length; i++) {
 			this.families[i].model = this;
 		}
-		this.initBuildings(START_BUILDINGS);
+		this.market = MARKET;
+		
+		this.initBuildings(this.createStartBuildings(this.families));
 		this.city.families = this.families;
 		this.city.model = this;
 		
@@ -28,9 +43,43 @@
 				this.possibleBuildings.push(building);
 			}
 		}
-		
-		var result = new Result(this.getPlayerFamily(), this.city.time, "log-new-family-success", [this.getPlayerFamily().name]);
-		this.log(result);
+	}
+	
+	this.createStartResources = function () {
+		var resources = [];
+		for (var j = 0; j < RESOURCES.length; j++) {
+			var r = RESOURCES[j];
+			var res = {};
+			res.name = r.name;
+			res.value = r.value;
+			resources.push(res);
+		}
+		return resources;
+	}
+	
+	this.createStartFamilies = function (noFamilies) {
+		var families = [];
+		families[0] = createFamily(this.createStartResources(), this.city, 2);
+		for (var i = 1; i < noFamilies; i++) {
+			families[i] = createFamily(getInfiniteResources(), this.city);
+		}
+		return families;
+	}
+	
+	this.createStartBuildings = function (families) {
+		var buildings = [];
+		for (var i = 0; i < families.length; i++) {
+			var owner = i == 0 ? "Player" : "PC";
+			var home = createFirstHomeForNewFamily(families[i], owner);
+			var row = 5 + i;
+			var col = 4 + i % 3;
+			var building = {};
+			building["building"] = home;
+			building["i"] = row;
+			building["j"] = col;
+			buildings.push(building);
+		}
+		return buildings;
 	}
 	
 	this.initBuildings = function (buildingData) {
@@ -66,7 +115,8 @@
 	this.simulateNewFamily = function (time, cityPower) {
 		var probability = cityPower / (YEAR) * (time / YEAR); //TODO
 		if (Math.random() < probability) {
-			var family = createFamily(getInfiniteResources());
+			var family = createFamily(getInfiniteResources(), this.city);
+			family.model = this;
 			var house = createFirstHomeForNewFamily(family, "PC");
 			var coords = this.map.getFreeRandomTile();
 			this.map.set(house, coords[0], coords[1]);

@@ -313,13 +313,20 @@ h1 {
 	background: #7D0000;
 }
 
-#game-over {
+.game-over {
+	display: block;
+}
+
+.game-over a {
+	color: #776e65;
+    background-color: white;
+    margin: 5px;
+	padding: 5px;
+    text-decoration: none;
+}
+
+.game-not-over {
 	display: none;
-	-webkit-animation: fadein 2s;
-	-moz-animation: fadein 2s;
-	-ms-animation: fadein 2s;
-	-o-animation: fadein 2s;
-	animation: fadein 2s;
 }
 
 .full-screen {

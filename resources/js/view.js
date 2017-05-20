@@ -12,6 +12,13 @@
 	this.personCollapsed = [];
 	this.highlightedResources = [];
 	
+	this.init = function () {
+		this.gameOver = false;
+		var div = document.getElementById("game-over");
+		div.className = "full-screen game-not-over";
+		// div.style.opacity = 0;
+	}
+	
 	this.move = function (dirx, diry) {
 		var delta = 200; 
 		this.x += dirx * delta;
@@ -593,19 +600,40 @@
 	}
 	
 	this.showGameOverScreen = function (family) {
-		var div = document.getElementById("game-over");
-		div.innerHTML = "";
-		div.style.display = "block";
-		var title = document.createElement("h1");
-		title.innerHTML = "Salita";
-		div.appendChild(title);
-		var subtitle = document.createElement("p");
-		subtitle.innerHTML = "Was zählt, ist die Familie.";
-		div.appendChild(subtitle);
-		
-		var text = document.createElement("p");
-		text.innerHTML = LAN.get("game-over", [family.name, family.power]);
-		div.appendChild(text);
-		//TODO restart button
+		if (!this.gameOver) {
+			var div = document.getElementById("game-over");
+			div.innerHTML = "";
+			div.className = "full-screen game-over";
+			div.style.opacity = 0;
+			setTimeout(fadeIn, 10);
+			var title = document.createElement("h1");
+			title.innerHTML = "Salita";
+			div.appendChild(title);
+			var subtitle = document.createElement("p");
+			subtitle.innerHTML = "Was zählt, ist die Familie.";
+			div.appendChild(subtitle);
+			
+			var text = document.createElement("p");
+			text.innerHTML = LAN.get("game-over", [family.name, family.power]);
+			div.appendChild(text);
+			
+			var restartButton = document.createElement("a");
+			restartButton.innerHTML = LAN.get("restart");
+			restartButton.onclick = function () { start(); };
+			
+			div.appendChild(document.createElement("br"));
+			div.appendChild(document.createElement("br"));
+			div.appendChild(restartButton);
+			
+			this.gameOver = true;
+		}
+	}	
+}
+
+fadeIn = function() {
+	var div = document.getElementById("game-over");
+	div.style.opacity = (parseFloat(div.style.opacity) + 0.01);
+	if (div.style.opacity < 1) {
+		setTimeout(fadeIn, 10);
 	}
 }

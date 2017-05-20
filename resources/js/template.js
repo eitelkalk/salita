@@ -178,6 +178,7 @@ LAN.words["info-educate"] = "Zum Ausbilden ein Produktionsgebäude auf der Karte
 LAN.words["fame"] = "Ruhm";
 LAN.words["for"] = "für";
 LAN.words["duration"] = "Dauer";
+LAN.words["restart"] = "Neustart";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -864,11 +865,11 @@ new Resource("herbs", 0, 100, 300, 50),
 new Resource("medicine", 0, 100, 300, 50),
 new Resource("crop", 0, 100, 300, 50),
 new Resource("flour", 0, 100, 300, 50),
-new Resource("bread", 0, 100, 300, 50),
-new Resource("cake", 0, 100, 300, 50),
-new Resource("beer", 0, 100, 300, 50),
+new Resource("bread", 0, 100, 300, 50, "food"),
+new Resource("cake", 0, 100, 300, 50, "food"),
+new Resource("beer", 0, 100, 300, 50, "food"),
 new Resource("freshmeat", 0, 100, 300, 50),
-new Resource("meat", 0, 100, 300, 50),
+new Resource("meat", 0, 100, 300, 50, "food"),
 new Resource("cow", 0, 100, 300, 50),
 new Resource("leather", 0, 100, 300, 50),
 new Resource("harness", 0, 100, 300, 50),
@@ -908,25 +909,10 @@ for (var i = 0; i < RESOURCES.length; i++) {
 	}
 }
 
-
-
 var YEAR = 300;
 var MONTH = 30;
 
 //Start data if no data has been stored
-var START_CITY = new City("Village");
-
-var NO_FAMILIES = 4;
-
-var START_RESOURCES = [];
-for (var j = 0; j < RESOURCES.length; j++) {
-	var r = RESOURCES[j];
-	var res = {};
-	res.name = r.name;
-	res.value = r.value;
-	START_RESOURCES.push(res);
-}
-
 function getInfiniteResources() {
 	var array = [];
 	for (var i = 0; i < RESOURCES.length; i++) {
@@ -936,12 +922,6 @@ function getInfiniteResources() {
 		array.push(res);
 	}
 	return array;
-}
-
-var START_FAMILIES = [];
-START_FAMILIES[0] = createFamily(START_RESOURCES, 2);
-for (var i = 1; i < NO_FAMILIES; i++) {
-	START_FAMILIES[i] = createFamily(getInfiniteResources());
 }
 
 function createPerson(family, startAge) {
@@ -954,9 +934,9 @@ function createPerson(family, startAge) {
 	return person;
 }
 
-function createFamily(startResources, noPersons) {
+function createFamily(startResources, city, noPersons) {
 	noPersons = noPersons || Math.floor(Math.random() * 5) + 1;
-	var family = new Family(startResources, 0, START_CITY);
+	var family = new Family(startResources, 0, city);
 	family.name = selectRandomlyFrom(FAMILY_NAMES);
 	family.power = 1;
 	for (var j = 0; j < noPersons; j++) {
@@ -964,19 +944,6 @@ function createFamily(startResources, noPersons) {
 		var person = createPerson(family, startAge);
 	}
 	return family;
-}
-
-var START_BUILDINGS = [];
-for (var i = 0; i < NO_FAMILIES; i++) {
-	var owner = i == 0 ? "Player" : "PC";
-	var home = createFirstHomeForNewFamily(START_FAMILIES[i], owner);
-	var row = 5 + i;
-	var col = 4 + i % 3;
-	var building = {};
-	building["building"] = home;
-	building["i"] = row;
-	building["j"] = col;
-	START_BUILDINGS.push(building);
 }
 
 function createFirstHomeForNewFamily(family, owner) {

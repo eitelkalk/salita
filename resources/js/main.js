@@ -1,6 +1,6 @@
-﻿var model = new Model();
-var view = new View();
-var game = new Game(model, view);
+﻿var model;
+var view;
+var game;
 
 //Image loader
 var Loader = {
@@ -64,7 +64,14 @@ function loadImages() {
 
 function main() {
 	var imagePromises = loadImages();
-	Promise.all(imagePromises).then(function() {game.start()});
+	Promise.all(imagePromises).then(function() {start()});
+}
+
+function start() {
+	model = new Model(); //TODO load or new data?
+	view = new View();
+	game = new Game(model, view);
+	game.start();
 }
 
 main();
@@ -82,7 +89,6 @@ function build(name) {
 }
 
 function buy(product, value) {
-	//var value = Math.floor(document.getElementById('in-' + product.name).value);
 	if (value >= 0) {
 		game.buy(product, value, model.getPlayerFamily());
 	} else {
@@ -116,11 +122,8 @@ function produce(building, product) {
 	}
 }
 
-function fireProductChanged(product, value) {
-	//TODO update market
-}
-
 function gameOver(family) {
+	abortEverything();
 	view.showGameOverScreen(family);
 }
 
