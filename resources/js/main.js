@@ -81,12 +81,12 @@ function build(name) {
 	view.highlight = true;
 }
 
-function buy(product, multi) {
-	var value = Math.floor(document.getElementById('in-' + product.name).value);
-	if (multi >= 0) {
-		game.buy(product, multi*value, model.getPlayerFamily());
+function buy(product, value) {
+	//var value = Math.floor(document.getElementById('in-' + product.name).value);
+	if (value >= 0) {
+		game.buy(product, value, model.getPlayerFamily());
 	} else {
-		game.sell(product, -multi*value, model.getPlayerFamily());
+		game.sell(product, -value, model.getPlayerFamily());
 	}
 }
 

@@ -10,6 +10,7 @@
 	this.infoY = 0;
 	this.showInfo = false;
 	this.personCollapsed = [];
+	this.highlightedResources = [];
 	
 	this.move = function (dirx, diry) {
 		var delta = 200; 
@@ -31,11 +32,12 @@
 	}
 	
 	this.update = function (model) {
+		this.family = model.getPlayerFamily();
 		this.drawMap(model.map);
-		this.drawResources(model.getPlayerFamily());
+		this.drawResources();
 		this.drawBuildingScreen(model.possibleBuildings, model);
 		this.drawMarket(model.market);
-		this.drawPersons(model.getPlayerFamily());
+		this.drawPersons(this.family);
 		this.updateLogger(model);
 	}
 	
@@ -66,6 +68,9 @@
 			return "#f08080";
 		}
 		if (event.family == model.getPlayerFamily()) {
+			if (event.text.includes("die")) {
+				return "#f08080";
+			}
 			return "#faf8ef";
 		}
 		if (event.family == model.city) {
@@ -303,6 +308,7 @@
 		effects.style.verticalAlign = "top";
 		
 		effects.appendChild(document.createTextNode(LAN.get("fame") + ": +" + building.fame));
+		effects.appendChild(document.createElement("br"));
 		
 		if (!("undefined" === typeof building.products)) {
 			effects.appendChild(document.createTextNode(LAN.get("products")));
@@ -322,6 +328,16 @@
 		button.className = "build";
 		button.innerHTML = LAN.get("build");
 		div.appendChild(button);
+		
+		div.onmouseenter = (function () {
+			this.addHighlightedResources(building.costs);
+			this.drawResources();
+		}).bind(this);
+		div.onmouseleave = (function () {
+			this.removeHighlightedResources(building.costs);
+			this.drawResources();
+		}).bind(this);
+		
 		return div;
 	}
 	
@@ -333,17 +349,13 @@
 						build(buildingNames[index]);
 					}
 				}
-				if (enabled[index]) {
-					buttons[index].style.cursor = "pointer";
-				} else {
-					buttons[index].style.cursor = "not-allowed";
-				}
+				buttons[index].style.cursor = enabled[index] ? "pointer" : "not-allowed";
 			})(i);
 		}
 	}
 	
-	this.drawResources = function (family) {
-		var resources = family.resources;
+	this.drawResources = function () {
+		var resources = this.family.resources;
 		var motherDiv = document.getElementById("resources");
 		motherDiv.innerHTML = "";
 		
@@ -352,7 +364,13 @@
 			var div = document.createElement("div");
 			div.id = 'res-' + res.name;
 			div.className = 'resource';
-			//div.style.color = this.getColorForResource(family, res);
+			//div.style.color = this.getColorForResource(this.family, res);
+			
+			if (this.highlightedResources.indexOf(res.name) !== -1) {
+				div.style.color = "#776e65";
+				div.style.backgroundColor = "white";
+			}
+			
 			div.innerHTML = LAN.get(res.name) + ": " + res.value.toLocaleString();
 			motherDiv.appendChild(div);
 		}
@@ -506,38 +524,56 @@
 	this.createMarketProduct = function (product) {
 		var div = document.createElement("div");
 		div.className = "product";
-		div.appendChild(document.createTextNode(LAN.get(product.name) + ": "));
-		var field = document.createElement("input");
-		field.id = "in-" + product.name;
-		field.type = "number";
-		field.min = "0";
-		field.step = "1";
-		field.value = "1";
-		field.oninput = function () {
-			fireProductChanged(product, field.value);
-		};
-		div.appendChild(field);
-		var costText = " " + LAN.get("each at") + " ";
+		div.appendChild(document.createTextNode(product.value + "\u00A0" + LAN.get(product.name)));
+		var costText = " " + LAN.get("for") + " ";
 		for (var i = 0; i < product.costs.length; i++) {
-			//TODO
 			costText += product.costs[i].value + "&nbsp;";
 			costText += LAN.get(product.costs[i].name);
 		}
-		costText += " " + LAN.get("and") + " " + product.time + "&nbsp;" + LAN.get("time");
 		var costs = document.createElement("span");
 		costs.innerHTML = costText;
 		div.appendChild(costs);
 		var b = document.createElement("a");
 		b.className = "buy";
 		b.innerHTML = LAN.get("buy");
-		b.onclick = function () { buy(product, 1); };
+		b.onclick = function () { buy(product, product.value); };
 		div.appendChild(b);
 		var sell = document.createElement("a");
 		sell.className = "sell";
 		sell.innerHTML = LAN.get("sell");
-		sell.onclick = function () { buy(product, -1); };
+		sell.onclick = function () { buy(product, -product.value); };
 		div.appendChild(sell);
+		
+		var time = document.createElement("span");
+		time.innerHTML = "(" + LAN.get("duration") + ": " + format(product.time) + ")";
+		div.appendChild(time);
+		
+		div.onmouseenter = (function () { 
+			this.addHighlightedResources([product]);
+			this.addHighlightedResources(product.costs);
+			this.drawResources();
+		}).bind(this);
+		div.onmouseleave = (function () {
+			this.removeHighlightedResources([product]);
+			this.removeHighlightedResources(product.costs);
+			this.drawResources();
+		}).bind(this);
+		
 		return div;
+	}
+	
+	this.addHighlightedResources = function (array) {
+		for (var i = 0; i < array.length; i++) {
+			this.highlightedResources.push(array[i].name);
+		}
+	}
+	this.removeHighlightedResources = function (array) {
+		for (var i = 0; i < array.length; i++) {
+			var index = this.highlightedResources.indexOf(array[i].name);
+			if (index !== -1) {
+				this.highlightedResources.splice(index, 1);
+			}
+		}
 	}
 	
 	this.showContent = function (button) {

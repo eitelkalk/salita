@@ -176,6 +176,8 @@ LAN.words["log"] = "Jahr #1: #2";
 LAN.words["info-build"] = "Zum Bauen einen freien Bauplatz auf der Karte per Mausklick auswählen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC drücken.";
 LAN.words["info-educate"] = "Zum Ausbilden ein Produktionsgebäude auf der Karte per Mausklick auswählen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC drücken.";
 LAN.words["fame"] = "Ruhm";
+LAN.words["for"] = "für";
+LAN.words["duration"] = "Dauer";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -853,42 +855,57 @@ var SUB_CATEGORIES = ["minori", "mediane", "maggiori"];
 var JOBS = ["apprentice", "journeyman", "foreman"];
 
 var RESOURCES = [
-"gold", "wood", "cart", "furniture", "truss", "herbs", "medicine", 
-"crop", "flour", "bread", "cake", "beer", "freshmeat", "meat", 
-"cow", "leather", "harness", "shoe", "silk", "dyedsilk", "cloth", 
-"sheep", "wool", "dyedwool", "fabrik", "clothes", "iron", "tool", 
-"stone", "brick", "tile", "sculpture", "gate", "weapon", "health"
+new Resource("gold", 10000, 1, 1, 1, "no-market"), //TODO categories
+new Resource("wood", 0, 100, 300, 50),
+new Resource("cart", 0, 100, 300, 50), 
+new Resource("furniture", 0, 100, 300, 50),
+new Resource("truss", 0, 100, 300, 50),
+new Resource("herbs", 0, 100, 300, 50),
+new Resource("medicine", 0, 100, 300, 50),
+new Resource("crop", 0, 100, 300, 50),
+new Resource("flour", 0, 100, 300, 50),
+new Resource("bread", 0, 100, 300, 50),
+new Resource("cake", 0, 100, 300, 50),
+new Resource("beer", 0, 100, 300, 50),
+new Resource("freshmeat", 0, 100, 300, 50),
+new Resource("meat", 0, 100, 300, 50),
+new Resource("cow", 0, 100, 300, 50),
+new Resource("leather", 0, 100, 300, 50),
+new Resource("harness", 0, 100, 300, 50),
+new Resource("shoe", 0, 100, 300, 50),
+new Resource("silk", 0, 100, 300, 50),
+new Resource("dyedsilk", 0, 100, 300, 50),
+new Resource("cloth", 0, 100, 300, 50),
+new Resource("sheep", 0, 100, 300, 50),
+new Resource("wool", 0, 100, 300, 50),
+new Resource("dyedwool", 0, 100, 300, 50),
+new Resource("fabrik", 0, 100, 300, 50),
+new Resource("clothes", 0, 100, 300, 50),
+new Resource("iron", 0, 100, 300, 50),
+new Resource("tool", 0, 100, 300, 50),
+new Resource("stone", 0, 100, 300, 50),
+new Resource("brick", 0, 100, 300, 50),
+new Resource("tile", 0, 100, 300, 50),
+new Resource("sculpture", 0, 100, 300, 50),
+new Resource("gate", 0, 100, 300, 50),
+new Resource("weapon", 0, 100, 300, 50),
+new Resource("health", 0, 100, 300, 50, "no-market"),
 ]; //TODO expensive clothes?
 
-var GROUPED_RESOURCES = [
-["wood", "crop", "stone", "iron", "herbs", "silk"],
-["flour", "cart", "beer", "tile", "wool", "silk", "freshmeat", "leather"],
-["dyedwool", "bread", "furniture", "truss", "meat", "harness", "shoe", "brick", "tool"],
-["dyedsilk", "gate", "fabrik"],
-["cake", "clothes", "weapon"],
-["sculpture", "cloth", "medicine", "cow", "sheep"]
-];
+//Resource(name, value, marketValue, marketTime, marketCost, category)
 
 var MARKET = [];
 for (var i = 0; i < RESOURCES.length; i++) {
 	var res = RESOURCES[i];
-	if (res.name !== "gold" && res.name !== "health") {
+	if (res.category !== "no-market") {
 		var p = {};
-		p.name = res;
-		var tmp = findGroupIndex(res) + 1;
-		p.time = tmp;
-		p.costs = [{"name" : "gold", "value" : tmp}];
+		p.name = res.name;
+		p.value = res.marketValue;
+		p.time = res.marketTime;
+		p.category = res.category;
+		p.costs = [{"name" : "gold", "value" : res.marketCost}];
 		MARKET.push(p);
 	}
-}
-
-function findGroupIndex(res) {
-	for (var i = 0; i < GROUPED_RESOURCES.length; i++) {
-		for (var j = 0; j < GROUPED_RESOURCES[i].length; j++) {
-			if (res == GROUPED_RESOURCES[i][j]) return i;
-		}
-	}
-	return -1;
 }
 
 
@@ -903,32 +920,22 @@ var NO_FAMILIES = 4;
 
 var START_RESOURCES = [];
 for (var j = 0; j < RESOURCES.length; j++) {
-	var res = new Resource(RESOURCES[j]);
-	res.value = getStartValue(res.name);
+	var r = RESOURCES[j];
+	var res = {};
+	res.name = r.name;
+	res.value = r.value;
 	START_RESOURCES.push(res);
 }
 
 function getInfiniteResources() {
 	var array = [];
 	for (var i = 0; i < RESOURCES.length; i++) {
-		var res = new Resource(RESOURCES[i]);
+		var res = {};
+		res.name = RESOURCES[i].name;
 		res.value = Infinity;
 		array.push(res);
 	}
 	return array;
-}
-
-function getStartValue(name) {
-	switch (name) {
-		case "gold"		: return 10000;
-		case "bread"	: return 500;
-		case "cake"		: return 50;
-		case "beer"		: return 500;
-		case "shoe"		: return 50;
-		case "meat"		: return 500;
-		case "clothes"	: return 50;
-		default			: return 0;
-	}
 }
 
 var START_FAMILIES = [];

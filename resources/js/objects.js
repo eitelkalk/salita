@@ -132,12 +132,12 @@ function Family(startResources, startTime, city) {
 	
 	this.reduce = function (cost) {
 		var res = this.findResource(cost.name);
-		res.changeValue(-1*cost.value);
+		res.value -= cost.value;
 	}
 	
 	this.augment = function (cost) {
 		var res = this.findResource(cost.name);
-		res.changeValue(cost.value);
+		res.value += cost.value;
 	}
 	
 	this.findResource = function (name) {
@@ -182,6 +182,7 @@ function Family(startResources, startTime, city) {
 			var index = this.members.indexOf(iDieNow);
 			this.members.splice(index, 1);
 			var event = new Result(this, this.city.time, "log-die-success", [iDieNow.name, formatYear(iDieNow.maxAge)]);
+			this.model.log(event);
 		}
 		if (this.members.length == 0) {
 			setTimeout((function(){ gameOver(this); }).bind(this), 1000);
@@ -293,15 +294,6 @@ function City(name) {
 	this.addFamily = function (family) {
 		this.families.push(family);
 		this.updateFamilyPowers();
-	}
-}
-
-function Resource(name, value) {
-	this.name = name;
-	this.value = value;
-	
-	this.changeValue = function (val) {
-		this.value += val;
 	}
 }
 
@@ -556,4 +548,13 @@ function Job(that, building) {
 			this.worker.splice(index, 1);
 		}
 	}
+}
+
+function Resource(name, value, marketValue, marketTime, marketCost, category) {
+	this.name = name;
+	this.value = value;
+	this.marketValue = marketValue;
+	this.marketTime = marketTime;
+	this.marketCost = marketCost;
+	this.category = category || "";
 }
