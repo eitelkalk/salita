@@ -193,6 +193,7 @@
 		div.innerHTML += LAN.get("foremen") + ": " + building.getJob("foreman").worker.length + "/" + building.getJob("foreman").max + "<br>";
 		div.innerHTML += LAN.get("journeymen") + ": " + building.getJob("journeyman").worker.length + "/" + building.getJob("journeyman").max + "<br>";
 		div.innerHTML += LAN.get("apprentices") + ": " + building.getJob("apprentice").worker.length + "/" + building.getJob("apprentice").max + "<br>";
+		div.innerHTML += LAN.get("wages") + ": " + building.workerWages().value + "&nbsp;" + LAN.get(building.workerWages().name) + "<br>";
 		var produceButtons = [];
 		for (var i = 0; i < building.products.length; i++) {
 			var product = building.products[i];
@@ -295,7 +296,7 @@
 		
 		var time = document.createElement("div");
 		time.className = "building-cost";
-		time.innerHTML = LAN.get("time") + ": " + formatShort(building.time);
+		time.innerHTML = LAN.get("duration") + ": " + formatYear(building.time);
 		costs.appendChild(time);
 		
 		for (var i = 0; i < building.costs.length; i++) {
@@ -487,12 +488,14 @@
 			marriageButton.innerHTML = LAN.get("marry");
 			marriageButton.onclick = function() { marry(person) };
 			div.appendChild(marriageButton);
+			div.appendChild(document.createTextNode(LAN.get("duration") + ": " + formatYear(2*YEAR)));
 		} else {
 			div.appendChild(this.createPersonData(LAN.get("spouse") + ": " + person.spouse.name));
 			var childButton = document.createElement("a");
 			childButton.innerHTML = LAN.get("beget-children");
 			childButton.onclick = function() { begetChildren(person) };
 			div.appendChild(childButton);
+			div.appendChild(document.createTextNode(LAN.get("duration") + ": " + formatYear(17*YEAR)));
 		}
 		div.appendChild(document.createElement("br"));
 		for (var i = 0; i < person.children.length; i++) {
@@ -506,6 +509,9 @@
 		jobButton.innerHTML = LAN.get("educate");
 		jobButton.onclick = function() { educate(person) };
 		div.appendChild(jobButton);
+		var dur = document.createTextNode(LAN.get("duration") + ": " + formatYear(2 * YEAR) + " / " + formatYear(3 * YEAR) + " / " + formatYear(5 * YEAR));
+		dur.title = LAN.get("app-jou-for");
+		div.appendChild(dur);
 		return div;
 	}
 	

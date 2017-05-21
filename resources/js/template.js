@@ -179,6 +179,8 @@ LAN.words["fame"] = "Ruhm";
 LAN.words["for"] = "für";
 LAN.words["duration"] = "Dauer";
 LAN.words["restart"] = "Neustart";
+LAN.words["app-jou-for"] = "Lehrling / Geselle / Meister";
+LAN.words["wages"] = "Löhne";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -979,7 +981,8 @@ function getNewBuilding(name) {
 
 formatYear = function (time) {
 	var years = Math.floor(time / YEAR);
-	return years + "&nbsp;" + (years == 1 ? LAN.get("year") : LAN.get("years"));
+	//return years + "&nbsp;" + (years == 1 ? LAN.get("year") : LAN.get("years"));
+	return years + "\u00a0" + (years == 1 ? LAN.get("year") : LAN.get("years"));
 }
 
 format = function (time) {

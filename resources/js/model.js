@@ -71,12 +71,11 @@
 		for (var i = 0; i < families.length; i++) {
 			var owner = i == 0 ? "Player" : "PC";
 			var home = createFirstHomeForNewFamily(families[i], owner);
-			var row = 5 + i;
-			var col = 4 + i % 3;
+			var coords = this.map.getFreeRandomTile();
 			var building = {};
 			building["building"] = home;
-			building["i"] = row;
-			building["j"] = col;
+			building["i"] = coords[0];
+			building["j"] = coords[1];
 			buildings.push(building);
 		}
 		return buildings;
@@ -421,7 +420,7 @@
 		if (woman.family.hasAFreeHome()) {
 			if (woman.age < 42 * YEAR && woman.spouse.age < 60 * YEAR) {
 				var child = woman.giveBirth();
-				var numberOfMonthsTillSuccess = Math.floor(Math.random() * 5) + 1;
+				var numberOfMonthsTillSuccess = 0; //Math.floor(Math.random() * 5) + 1;
 				var overallTime = (numberOfMonthsTillSuccess + 10) * MONTH;
 				woman.applyTime(overallTime);
 				woman.spouse.applyTime(overallTime);
