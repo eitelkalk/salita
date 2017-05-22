@@ -95,14 +95,19 @@
 	}
 		
 	this.getFood = function (number) {
-		//TODO
 		var costs = [];
+		costs.push({"name" : "health",	"value" : number * 1});
+		costs.push({"name" : "right",	"value" : number * 1});
 		costs.push({"name" : "bread",	"value" : number * 10});
-		costs.push({"name" : "cake",	"value" : number * 1});
-		costs.push({"name" : "meat",	"value" : number * 10});
 		costs.push({"name" : "beer",	"value" : number * 10});
-		costs.push({"name" : "shoe",	"value" : number * 1});
-		costs.push({"name" : "clothes",	"value" : number * 1});
+		if (this.family.fame > 10) {
+			costs.push({"name" : "meat",	"value" : number * 10});
+			costs.push({"name" : "clothes",	"value" : number * 1});
+		}
+		if (this.family.fame > 25) {
+			costs.push({"name" : "cake",	"value" : number * 1});
+			costs.push({"name" : "shoe",	"value" : number * 1});
+		}
 		return costs;
 	}
 }
@@ -160,9 +165,14 @@ function Family(startResources, startTime, city) {
 	}
 	
 	this.processTime = function(time) {
+		this.canDie = false;
 		var feedingTimes = Math.floor((this.time + time)/ this.FEEDING_INTERVAL) - Math.floor(this.time / this.FEEDING_INTERVAL);
-		this.feed(feedingTimes);
+		if (feedingTimes > 0) {
+			this.feed(feedingTimes);
+		}
 		this.time += time;
+		this.canDie = true;
+		this.letMyPeopleGo();
 		this.city.processTime(this, time);
 	}
 	
@@ -392,6 +402,7 @@ function Home(that) {
 	this.costs = that.costs;
 	this.residents = [];
 	this.capacity = that.capacity;
+	this.fame = that.fame;
 
 	this.isEmpty = function () {
 		return false;
@@ -411,6 +422,7 @@ function Home(that) {
 function Shop(that) {
 	this.name = that.name;
 	this.category = that.category;
+	this.subcat = that.subcat;
 	this.time = that.time;
 	this.costs = that.costs;
 	this.jobs = [];
@@ -422,6 +434,8 @@ function Shop(that) {
 		this.wages.push(that.wages[i]);
 	}
 	this.products = that.products;
+	this.fame = that.fame;
+	this.minFame = that.minFame;
 	
 	this.isEmpty = function () {
 		return false;
@@ -551,6 +565,7 @@ function Church(that) {
 	this.category = that.category;
 	this.time = that.time;
 	this.costs = that.costs;
+	this.fame = that.fame;
 
 	this.isEmpty = function () {
 		return false;
@@ -562,6 +577,7 @@ function Town(that) {
 	this.category = that.category;
 	this.time = that.time;
 	this.costs = that.costs;
+	this.fame = that.fame;
 
 	this.isEmpty = function () {
 		return false;

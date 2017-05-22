@@ -37,7 +37,7 @@ h1 {
 
 .container-right {
 	width: 400px;
-	height: calc(100% - 200px);
+	height: calc(100% - 300px);
 	position: fixed;
 	top: 0;
 	left: calc(100% - 400px);
@@ -91,9 +91,12 @@ h1 {
 }
 
 #feeding-info {
+	height: 80px;
+	width: 380px;
 	padding: 10px;
-	position: absolute;
-	bottom: 0;
+	position: fixed;
+	bottom: 200px;
+	right: 0;
 }
 
 .toolbar ul{

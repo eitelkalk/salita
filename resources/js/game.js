@@ -7,10 +7,6 @@
 	this.queuedPerson = "";
 	
 	this.build = function (building, i, j, builder) {
-		if (building.category == "church" || building.category == "town") {
-			builder = this.model.city;
-		}
-		
 		var result = this.model.build(building, i, j, builder);
 		this.model.log(result);
 		this.view.highlight = false;

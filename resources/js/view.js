@@ -295,27 +295,32 @@
 		costs.style.display = "inline-block";
 		costs.style.verticalAlign = "top";
 		
-		var time = document.createElement("div");
-		time.className = "building-cost";
-		time.innerHTML = LAN.get("duration") + ": " + formatYear(building.time);
-		costs.appendChild(time);
-		
 		for (var i = 0; i < building.costs.length; i++) {
 			var cost = building.costs[i];
 			var costDiv = document.createElement("div");
 			costDiv.style.color = family.hasEnough(cost) ? "white" : "#f08080";
 			costDiv.className = "building-cost";
-			costDiv.innerHTML = LAN.get(cost.name) + ": " + cost.value;
+			costDiv.innerHTML = LAN.get(cost.name) + ": " + cost.value.toLocaleString();
 			costs.appendChild(costDiv);
 		}
 		div.appendChild(costs);
 
-		//TODO effects
 		var effects = document.createElement("div");
 		effects.style.display = "inline-block";
 		effects.style.marginLeft = "5px";
 		effects.style.verticalAlign = "top";
 		
+		
+		var time = document.createElement("div");
+		time.className = "building-cost";
+		time.innerHTML = LAN.get("duration") + ": " + formatYear(building.time);
+		effects.appendChild(document.createTextNode(LAN.get("duration") + ": " + formatYear(building.time)));
+		effects.appendChild(document.createElement("br"));
+		var fame = document.createElement("div");
+		fame.innerHTML = LAN.get("min-fame") + building.minFame;
+		fame.style.color = family.power >= building.minFame ? "white" : "#f08080";
+		effects.appendChild(fame);
+		effects.appendChild(document.createElement("br"));
 		effects.appendChild(document.createTextNode(LAN.get("fame") + ": +" + building.fame));
 		effects.appendChild(document.createElement("br"));
 		
@@ -526,13 +531,29 @@
 	this.drawMarket = function (products) {
 		var motherDiv = document.getElementById("content-market");
 		motherDiv.innerHTML = "";
-		for (var i = 0; i < products.length; i++) {
-			var product = products[i];
-			if (product.name !== "gold") {
-				var div = this.createMarketProduct(product);
+		for (var i = 0; i < MARKET_CATEGORIES.length; i++) {
+			var category = MARKET_CATEGORIES[i]
+			var prods = this.findProductsWithCategory(products, category);
+			var title = document.createElement("h3");
+			title.style.textAlign = "left";
+			title.innerHTML = LAN.get(category);
+			motherDiv.appendChild(title);
+			for (var j = 0; j < prods.length; j++) {
+				var div = this.createMarketProduct(prods[j]);
 				motherDiv.appendChild(div);
+			}			
+		}
+	}
+	
+	this.findProductsWithCategory = function(products, category) {
+		var prods = [];
+		for (var i = 0; i < products.length; i++) {
+			var p = products[i];
+			if (p.category == category) {
+				prods.push(p);
 			}
 		}
+		return prods;
 	}
 	
 	this.createMarketProduct = function (product) {
@@ -591,11 +612,17 @@
 		}
 	}
 	
+	this.removeAllHighlightedResources = function () {
+		while (this.highlightedResources.length > 0) {
+			this.highlightedResources.pop();
+		}
+	}
+	
 	this.updateFeedingInfo = function (family) {
 		var div = document.getElementById("feeding-info");
 		div.innerHTML = "";
 		div.appendChild(document.createTextNode(LAN.get("next-feeding")));
-		div.appendChild(document.createTextNode(format(family.nextFeedingTime())));
+		div.appendChild(document.createTextNode(formatShort(family.nextFeedingTime())));
 		div.appendChild(document.createElement("br"));
 		div.appendChild(document.createTextNode(LAN.get("needed-resources")));
 		var costs = family.getFood(1);
@@ -606,6 +633,8 @@
 				div.appendChild(document.createTextNode(", "));
 			}
 		}
+		div.appendChild(document.createElement("br"));
+		div.appendChild(document.createTextNode(LAN.get("text-no-new-members")));
 		div.onmouseenter = (function () {
 			this.addHighlightedResources(costs);
 			this.drawResources();
@@ -630,6 +659,7 @@
 			tablinks[i].className = tablinks[i].className.replace(" active-button", "");
 		}
 		button.className += " active-button";
+		this.removeAllHighlightedResources();
 	}
 	
 	this.showGameOverScreen = function (family) {

@@ -96,11 +96,9 @@
 	
 	this.canBeBuiltByPlayer = function (building) {
 		var costs = building.costs;
-		var canBuild = true;
+		var canBuild = this.getPlayerFamily().power >= building.fame;
 		for (var index = 0; index < costs.length; index++) {
-			if (!this.getPlayerFamily().hasEnough(costs[index])) {
-				canBuild = false;
-			}
+			canBuild &= this.getPlayerFamily().hasEnough(costs[index]);
 		}
 		return canBuild;
 	}
@@ -305,7 +303,7 @@
 	}
 	
 	this.build = function (building, i, j, builder) {
-		var canBuild = this.map.isEmpty(i, j) && builder.hasEnoughTime();
+		var canBuild = this.map.isEmpty(i, j) && builder.hasEnoughTime() && builder.power >= building.minFame;
 		var costs = building.costs;
 		var time = building.time;
 		for (var index = 0; index < costs.length; index++) {
@@ -316,8 +314,9 @@
 				builder.reduce(costs[index]);
 			}
 			builder.applyTime(time);
-			building.owner = builder;
+			building.owner = building.category == "church" || building.category == "town" ? this.city : builder;
 			builder.buildings.push(building);
+			builder.power += building.fame;
 			this.map.set(building, i, j);
 			return new Result(builder, this.city.time, "log-building-success", [LAN.get(building.name)], time);
 		}

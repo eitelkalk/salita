@@ -86,6 +86,7 @@ function build(name) {
 	info.innerHTML = LAN.get("info-build");
 	info.style.display = "block";
 	view.highlight = true;
+	view.removeAllHighlightedResources();
 }
 
 function buy(product, value) {
@@ -223,6 +224,7 @@ function abortEverything() {
 	game.queuedBuilding = "";
 	game.queuedPerson = "";
 	view.highlight = false;
+	view.removeAllHighlightedResources();
 	view.update(model);
 }
 
@@ -249,9 +251,9 @@ document.getElementById('map').onmouseup = function(event) {
 		game.educate(game.queuedPerson, building);
 	} else {
 		game.toggleInfo(coords[0], coords[1]);
-		var info = document.getElementById("info-text");
-		info.style.display = "none";
 	}
+	var info = document.getElementById("info-text");
+	info.style.display = "none";
 }
 
 document.getElementById("map").addEventListener("wheel", zoom);
