@@ -1,4 +1,4 @@
-function Person(family) {
+﻿function Person(family) {
 	this.family = family;
 	this.family.addPerson(this);
 	this.parents = [];
@@ -77,6 +77,34 @@ function Person(family) {
 		child.parents.push(this.spouse);
 		return child;
 	}
+	
+	this.canBeFed = function (number) {
+		var can = true;
+		var costs = this.getFood(number);
+		for (var i = 0; i < costs.length; i++) {
+			can &= this.family.hasEnough(costs[i]);
+		}
+		return can;
+	}
+	
+	this.feed = function (number) {
+		var costs = this.getFood(number);
+		for (var i = 0; i < costs.length; i++) {
+			this.family.reduce(costs[i]);
+		}
+	}
+		
+	this.getFood = function (number) {
+		//TODO
+		var costs = [];
+		costs.push({"name" : "bread",	"value" : number * 10});
+		costs.push({"name" : "cake",	"value" : number * 1});
+		costs.push({"name" : "meat",	"value" : number * 10});
+		costs.push({"name" : "beer",	"value" : number * 10});
+		costs.push({"name" : "shoe",	"value" : number * 1});
+		costs.push({"name" : "clothes",	"value" : number * 1});
+		return costs;
+	}
 }
 
 function Family(startResources, startTime, city) {
@@ -89,6 +117,7 @@ function Family(startResources, startTime, city) {
 	this.city.addFamily(this);
 	this.willDie = [];
 	this.canDie = true;
+	this.FEEDING_INTERVAL = 10 * YEAR;
 	
 	this.hasEnough = function (cost) {
 		var res = this.findResource(cost.name);
@@ -131,40 +160,46 @@ function Family(startResources, startTime, city) {
 	}
 	
 	this.processTime = function(time) {
-		var interval = 10 * YEAR;
-		var feedingTimes = Math.floor((this.time + time)/ interval) - Math.floor(this.time / interval); 
+		var feedingTimes = Math.floor((this.time + time)/ this.FEEDING_INTERVAL) - Math.floor(this.time / this.FEEDING_INTERVAL);
+		this.feed(feedingTimes);
 		this.time += time;
 		this.city.processTime(this, time);
 	}
 	
-	//TODO
-	this.canBeFed = function (number) {
-		var can = true;
-		var costs = this.getFood(number);
-		for (var i = 0; i < costs.length; i++) {
-			can &= this.family.hasEnough(costs[i]);
-		}
-		return can;
-	}
-	
-	this.getFood = function (number) {
-		//TODO
-		number *= this.members.length;
-		var costs = [];
-		costs.push({"name" : "bread",	"value" : number * 10});
-		costs.push({"name" : "cake",	"value" : number * 1});
-		costs.push({"name" : "meat",	"value" : number * 10});
-		costs.push({"name" : "beer",	"value" : number * 10});
-		costs.push({"name" : "shoe",	"value" : number * 1});
-		costs.push({"name" : "clothes",	"value" : number * 1});
-		return costs;
+	this.nextFeedingTime = function () {
+		return Math.floor((this.time + this.FEEDING_INTERVAL) / this.FEEDING_INTERVAL) * this.FEEDING_INTERVAL - this.time;
 	}
 	
 	this.feed = function (number) {
-		var costs = this.getFood(number);
-		for (var i = 0; i < costs.length; i++) {
-			this.family.reduce(costs[i]);
+		for (var i = 0; i < this.members.length; i++) {
+			var m = this.members[i];
+			if (m.canBeFed(number)) {
+				m.feed(number);
+			} else {
+				m.die();
+			}
 		}
+	}
+		
+	this.getFood = function (number) {
+		var costs = [];
+		for (var i = 0; i < this.members.length; i++) {
+			var tmp = this.members[i].getFood(number);
+			for (var j = 0; j < tmp.length; j++) {
+				this.addToArray(costs, tmp[j]);
+			}
+		}
+		return costs;
+	}
+	
+	this.addToArray = function (array, element) {
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].name == element.name) {
+				array[i].value += element.value;
+				return;
+			}
+		}
+		array.push(element);
 	}
 	
 	this.sum = function (array) {

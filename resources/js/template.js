@@ -181,6 +181,8 @@ LAN.words["duration"] = "Dauer";
 LAN.words["restart"] = "Neustart";
 LAN.words["app-jou-for"] = "Lehrling / Geselle / Meister";
 LAN.words["wages"] = "Löhne";
+LAN.words["next-feeding"] = "Nächste Ernährungsphase: ";
+LAN.words["needed-resources"] = "Benötigte Waren: ";
 
 LAN.get = function (key, args) {
 	if (key in LAN.words) {
@@ -999,13 +1001,13 @@ formatFancy = function (time, y, m, d) {
 	var days = (time - years * YEAR - months * MONTH);
 	var text = "";
 	if (years > 0) {
-		text += years + "&nbsp;" + (years == 1 ? LAN.get(y) : LAN.get(y + "s")) + " ";
+		text += years + "\u00a0" + (years == 1 ? LAN.get(y) : LAN.get(y + "s")) + " ";
 	}
 	if (months > 0) {
-		text += months + "&nbsp;" + (months == 1 ? LAN.get(m) : LAN.get(m + "s")) + " ";
+		text += months + "\u00a0" + (months == 1 ? LAN.get(m) : LAN.get(m + "s")) + " ";
 	}
 	if (years + months == 0 || days > 0) {
-		text += days + "&nbsp;" + (days == 1 ? LAN.get(d) : LAN.get(d + "s"));
+		text += days + "\u00a0" + (days == 1 ? LAN.get(d) : LAN.get(d + "s"));
 	}
 	return text;
 }

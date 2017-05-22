@@ -46,6 +46,7 @@
 		this.drawMarket(model.market);
 		this.drawPersons(this.family);
 		this.updateLogger(model);
+		this.updateFeedingInfo(this.family);
 	}
 	
 	this.updateSize = function (mapWidth, mapHeight, width, height) {
@@ -580,6 +581,7 @@
 			this.highlightedResources.push(array[i].name);
 		}
 	}
+	
 	this.removeHighlightedResources = function (array) {
 		for (var i = 0; i < array.length; i++) {
 			var index = this.highlightedResources.indexOf(array[i].name);
@@ -587,6 +589,31 @@
 				this.highlightedResources.splice(index, 1);
 			}
 		}
+	}
+	
+	this.updateFeedingInfo = function (family) {
+		var div = document.getElementById("feeding-info");
+		div.innerHTML = "";
+		div.appendChild(document.createTextNode(LAN.get("next-feeding")));
+		div.appendChild(document.createTextNode(format(family.nextFeedingTime())));
+		div.appendChild(document.createElement("br"));
+		div.appendChild(document.createTextNode(LAN.get("needed-resources")));
+		var costs = family.getFood(1);
+		for (var i = 0; i < costs.length; i++) {
+			var cost = costs[i];
+			div.appendChild(document.createTextNode(cost.value + "\u00a0" + LAN.get(cost.name)));
+			if (i < costs.length - 1) {
+				div.appendChild(document.createTextNode(", "));
+			}
+		}
+		div.onmouseenter = (function () {
+			this.addHighlightedResources(costs);
+			this.drawResources();
+		}).bind(this);
+		div.onmouseleave = (function () {
+			this.removeHighlightedResources(costs);
+			this.drawResources();
+		}).bind(this);
 	}
 	
 	this.showContent = function (button) {

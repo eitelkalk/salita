@@ -90,6 +90,12 @@ h1 {
 	overflow: hidden;
 }
 
+#feeding-info {
+	padding: 10px;
+	position: absolute;
+	bottom: 0;
+}
+
 .toolbar ul{
 	list-style-type: none;
     margin: 0;

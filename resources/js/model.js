@@ -8,30 +8,22 @@
 	}
 	
 	this.init = function () {
-		//TODO load stored data
 		var localDataStored = false;
 		if (localDataStored) {
 			this.loadData();
 		} else {
 			this.initNewData();
 		}
+		this.initCommonData();
 		var result = new Result(this.getPlayerFamily(), this.city.time, "log-new-family-success", [this.getPlayerFamily().name]);
 		this.log(result);
 	}
 	
 	this.loadData = function () {
-		//TODO
 	}
 	
-	this.initNewData = function () {
-		this.city = new City("Village");
-		this.families = this.createStartFamilies(4);
-		for (var i = 0; i < this.families.length; i++) {
-			this.families[i].model = this;
-		}
+	this.initCommonData = function () {
 		this.market = MARKET;
-		
-		this.initBuildings(this.createStartBuildings(this.families));
 		this.city.families = this.families;
 		this.city.model = this;
 		
@@ -43,6 +35,16 @@
 				this.possibleBuildings.push(building);
 			}
 		}
+	}
+	
+	this.initNewData = function () {
+		this.city = new City("Village");
+		this.families = this.createStartFamilies(4);
+		for (var i = 0; i < this.families.length; i++) {
+			this.families[i].model = this;
+		}
+		
+		this.initBuildings(this.createStartBuildings(this.families));
 	}
 	
 	this.createStartResources = function () {

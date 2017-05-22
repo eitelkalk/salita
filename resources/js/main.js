@@ -68,7 +68,7 @@ function main() {
 }
 
 function start() {
-	model = new Model(); //TODO load or new data?
+	model = new Model();
 	view = new View();
 	game = new Game(model, view);
 	game.start();
