@@ -130,7 +130,6 @@
 			if (result.text.includes("success")) {
 				this.log(result);
 			}
-			console.log(result);
 			family.simulationTime -= result.time;
 		}
 	}
