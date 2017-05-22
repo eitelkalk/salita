@@ -100,11 +100,11 @@
 		costs.push({"name" : "right",	"value" : number * 1});
 		costs.push({"name" : "bread",	"value" : number * 10});
 		costs.push({"name" : "beer",	"value" : number * 10});
-		if (this.family.fame > 10) {
+		if (this.family.power > 10) {
 			costs.push({"name" : "meat",	"value" : number * 10});
 			costs.push({"name" : "clothes",	"value" : number * 1});
 		}
-		if (this.family.fame > 25) {
+		if (this.family.power > 25) {
 			costs.push({"name" : "cake",	"value" : number * 1});
 			costs.push({"name" : "shoe",	"value" : number * 1});
 		}
@@ -173,7 +173,7 @@ function Family(startResources, startTime, city) {
 		this.time += time;
 		this.canDie = true;
 		this.letMyPeopleGo();
-		this.city.processTime(this, time);
+		this.city.processTime(null, time); //TODO null or this?
 	}
 	
 	this.nextFeedingTime = function () {
@@ -188,6 +188,9 @@ function Family(startResources, startTime, city) {
 			} else {
 				m.die();
 			}
+		}
+		if (this == this.model.getPlayerFamily()) {
+			this.model.log(new Result(this, this.city.time, "log-feeding-success"));
 		}
 	}
 		

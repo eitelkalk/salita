@@ -172,6 +172,7 @@ LAN.words["log-building-fail"] = "Bau von #1 wurde abgebrochen.";
 LAN.words["log-new-family-success"] = "Die Familie #1 ist in die Stadt gezogen.";
 LAN.words["game-over"] = "Das Spiel ist vorbei. Die Familie #1 kann nicht fortbestehen. Du hast sie zu #2 Ruhm geführt.";
 LAN.words["log-die-success"] = "#1 starb im Alter von #2n";
+LAN.words["log-feeding-success"] = "Die Familie wurde ernährt.";
 LAN.words["log-produce-not-owner"] = "Zum Produzieren musst du Besitzer des Gebäudes sein.";
 LAN.words["log"] = "Jahr #1: #2";
 LAN.words["info-build"] = "Zum Bauen einen freien Bauplatz auf der Karte per Mausklick auswählen.<br>Die Karte kann mit WASD oder den Pfeiltasten bewegt werden.<br><br>Zum Abbrechen ESC drücken.";
@@ -897,7 +898,7 @@ for (var i = 0; i < length; i++) {
 		BUILDINGS.push(tmp);
 	}
 	if (building.category == "shop") {
-		building.wages = [10, 20, 100];
+		building.wages = [1, 2, 10];
 		if (building.subcat == "maggiori") {
 			building.minFame = 25;
 		} else if (building.subcat == "mediane") {
@@ -948,8 +949,8 @@ new Resource("tile", 0, 100, 300, 100, "stone-work"),
 new Resource("sculpture", 0, 1, 300, 100, "stone-work"),
 new Resource("gate", 0, 10, 300, 50, "iron-work"),
 new Resource("weapon", 0, 10, 300, 150, "iron-work"),
-new Resource("health", 50, 100, 300, 50, "no-market"),
-new Resource("right", 200, 100, 300, 50, "no-market"),
+new Resource("health", 200, 100, 300, 50, "no-market"),
+new Resource("right", 500, 100, 300, 50, "no-market"),
 ];
 //Resource(name, value, marketValue, marketTime, marketCost, category)
 

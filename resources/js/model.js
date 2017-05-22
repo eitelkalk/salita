@@ -96,7 +96,7 @@
 	
 	this.canBeBuiltByPlayer = function (building) {
 		var costs = building.costs;
-		var canBuild = this.getPlayerFamily().power >= building.fame;
+		var canBuild = this.getPlayerFamily().power >= building.minFame;
 		for (var index = 0; index < costs.length; index++) {
 			canBuild &= this.getPlayerFamily().hasEnough(costs[index]);
 		}
@@ -112,7 +112,7 @@
 	}
 	
 	this.simulateNewFamily = function (time, cityPower) {
-		var probability = cityPower / (YEAR) * (time / YEAR); //TODO
+		var probability = cityPower * time / (10 * YEAR * YEAR); //TODO
 		if (Math.random() < probability) {
 			var family = createFamily(getInfiniteResources(), this.city);
 			family.model = this;
@@ -130,6 +130,7 @@
 			if (result.text.includes("success")) {
 				this.log(result);
 			}
+			console.log(result);
 			family.simulationTime -= result.time;
 		}
 	}
@@ -210,9 +211,9 @@
 		if (!family.hasAFreeHome()) {
 			building = getNewBuilding(selectRandomlyFrom(this.getHomeNames()));
 		} else {
-			building = getNewBuilding(selectRandomlyFrom(this.getShopNames()));
+			building = getNewBuilding(selectRandomlyFrom(this.getShopNames(family.power)));
 		}
-	
+		console.log(building);
 		var coords = this.map.getFreeRandomTile();
 		return this.build(building, coords[0], coords[1], family);
 	}
@@ -228,11 +229,11 @@
 		return homeNames;
 	}
 	
-	this.getShopNames = function () {
+	this.getShopNames = function (fame) {
 		var shopNames = [];
 		for (var i = 0; i < BUILDINGS.length; i++) {
 			var building = BUILDINGS[i];
-			if (building.category == "shop") {
+			if (building.category == "shop" && fame >= building.minFame) {
 				shopNames.push(building.name);
 			}
 		}
@@ -270,7 +271,7 @@
 	}
 	
 	this.simulateEducation = function (family, shops) {
-		return this.educate(selectRandomlyFrom(this.getPossiblePersons), selectRandomlyFrom(shops));
+		return this.educate(selectRandomlyFrom(this.getPossiblePersons(family)), selectRandomlyFrom(shops));
 	}
 	
 	this.getPossiblePersons = function (family) {
@@ -318,6 +319,7 @@
 			builder.buildings.push(building);
 			builder.power += building.fame;
 			this.map.set(building, i, j);
+			this.buildings.push(building);
 			return new Result(builder, this.city.time, "log-building-success", [LAN.get(building.name)], time);
 		}
 		return new Result(builder, this.city.time, "log-building-fail", [LAN.get(building.name)]);
@@ -325,48 +327,32 @@
 	
 	this.buy = function (product, amount, buyer) {
 		var canBuy = true;
-		var multipliedCosts = this.multiplyCosts(product.costs, amount);
-		for (var i = 0; i < multipliedCosts.length; i++) {
-			canBuy &= buyer.hasEnough(multipliedCosts[i]);
+		for (var i = 0; i < product.costs.length; i++) {
+			canBuy &= buyer.hasEnough(product.costs[i]);
 		}
 		if (canBuy) {
-			for (var i = 0; i < multipliedCosts.length; i++) {
-				buyer.reduce(multipliedCosts[i]);
+			for (var i = 0; i < product.costs.length; i++) {
+				buyer.reduce(product.costs[i]);
 			}
-			var time = product.time * amount;
-			buyer.applyTime(time);
+			buyer.applyTime(product.time);
 			buyer.augment({"name" : product.name, "value" : amount});
-			return new Result(buyer, this.city.time, "log-bought-success", [amount, LAN.get(product.name)], time);
+			return new Result(buyer, this.city.time, "log-bought-success", [amount, LAN.get(product.name)], product.time);
 		}
 		return new Result(buyer, this.city.time, "log-bought-fail", [amount, LAN.get(product.name)]);
 	}
 	
 	this.sell = function (product, amount, seller) {
 		var canSell = true;
-		var multipliedCosts = this.multiplyCosts(product.costs, amount);
 		canSell &= seller.hasEnough({"name" : product.name, "value" : amount});
 		if (canSell) {
-			for (var i = 0; i < multipliedCosts.length; i++) {
-				seller.augment(multipliedCosts[i]);
+			for (var i = 0; i < product.costs.length; i++) {
+				seller.augment(product.costs[i]);
 			}
-			var time = product.time * amount;
-			seller.applyTime(time);
+			seller.applyTime(product.time);
 			seller.reduce({"name" : product.name, "value" : amount});
-			return new Result(seller, this.city.time, "log-sold-success", [amount, LAN.get(product.name)], time);
+			return new Result(seller, this.city.time, "log-sold-success", [amount, LAN.get(product.name)], product.time);
 		}
 		return new Result(seller, this.city.time, "log-sold-fail", [amount, LAN.get(product.name)]);
-	}
-	
-	this.multiplyCosts = function (costs, multi) {
-		var multipliedCosts = [];
-		for (var i = 0; i < costs.length; i++) {
-			var cost = costs[i];
-			var multipliedCost = {};
-			multipliedCost.name = cost.name;
-			multipliedCost.value = cost.value * multi;
-			multipliedCosts[i] = multipliedCost;
-		}
-		return multipliedCosts;
 	}
 	
 	this.marry = function (person) {
@@ -414,6 +400,7 @@
 		var cost = {};
 		cost.name = "gold";
 		cost.value = (fam.power - ily.power + 1) * 100;
+		cost.value = Math.min(100, cost.value);
 		return cost;
 	}
 	

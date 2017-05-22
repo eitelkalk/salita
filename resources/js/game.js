@@ -16,12 +16,14 @@
 	this.buy = function (product, amount, buyer) {
 		var result = this.model.buy(product, amount, buyer);
 		this.model.log(result);
+		this.view.removeAllHighlightedResources();
 		this.view.update(this.model);
 	}
 	
 	this.sell = function (product, amount, seller) {
 		var result = this.model.sell(product, amount, seller);
 		this.model.log(result);
+		this.view.removeAllHighlightedResources();
 		this.view.update(this.model);
 	}
 	
