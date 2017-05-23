@@ -112,7 +112,7 @@
 	}
 	
 	this.simulateNewFamily = function (time, cityPower) {
-		var probability = cityPower * time / (10 * YEAR * YEAR); //TODO
+		var probability = cityPower * time / (5 * YEAR * YEAR); //TODO
 		if (Math.random() < probability) {
 			var family = createFamily(getInfiniteResources(), this.city);
 			family.model = this;
@@ -270,7 +270,9 @@
 	}
 	
 	this.simulateEducation = function (family, shops) {
-		return this.educate(selectRandomlyFrom(this.getPossiblePersons(family)), selectRandomlyFrom(shops));
+		var person = selectRandomlyFrom(this.getPossiblePersons(family));
+		var bestShops = this.findBestShopFor(person, shops);
+		return this.educate(person, selectRandomlyFrom(bestShops));
 	}
 	
 	this.getPossiblePersons = function (family) {
@@ -282,7 +284,28 @@
 		if (apprentices.length > 0) {
 			return apprentices;
 		}
+		var without = this.getPersons(family, "none");
+		if (without.length > 0) {
+			return without;
+		}
 		return family.members;
+	}
+	
+	this.findBestShopFor = function (person, possibleShops) {
+		if (person.job == "none") {
+			return possibleShops;
+		}
+		var shops = [];
+		for (var i = 0; i < possibleShops.length; i++) {
+			var shop = possibleShops[i];
+			if (person.job.workplace.name == shop.name) {
+				shops.push(shop);
+			}
+		}
+		if (shops.length > 0) {
+			return shops;
+		}
+		return possibleShops;
 	}
 	
 	this.getPersons = function (family, job) {
@@ -399,7 +422,7 @@
 		var cost = {};
 		cost.name = "gold";
 		cost.value = (fam.power - ily.power + 1) * 100;
-		cost.value = Math.min(100, cost.value);
+		cost.value = Math.max(100, cost.value);
 		return cost;
 	}
 	

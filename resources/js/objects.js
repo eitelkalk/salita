@@ -31,6 +31,12 @@
 		this.home.removeResident(this);
 		this.removeFromParents();
 		this.removeFromChildren();
+		if (this.spouse !== "none") {
+			this.spouse.spouse = "none";
+		}
+		if (this.job !== "none") {
+			this.job.fire(this);
+		}
 		this.family.dies(this);
 	}
 	
@@ -159,9 +165,9 @@ function Family(startResources, startTime, city) {
 		for (var i = 0; i < this.members.length; i++) {
 			this.members[i].applyTime(personalTime[i]);
 		}
-		this.canDie = true;
-		this.letMyPeopleGo();
-		this.city.processTime(this, time);
+		//this.canDie = true;
+		//this.letMyPeopleGo();
+		//this.city.processTime(this, time);
 	}
 	
 	this.processTime = function(time) {
@@ -173,7 +179,7 @@ function Family(startResources, startTime, city) {
 		this.time += time;
 		this.canDie = true;
 		this.letMyPeopleGo();
-		this.city.processTime(null, time); //TODO null or this?
+		this.city.processTime(this, time);
 	}
 	
 	this.nextFeedingTime = function () {

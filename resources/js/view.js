@@ -204,13 +204,14 @@
 				text += ", " + cost.value + "\u00A0" + LAN.get(cost.name);
 			}
 			text = text.replace(", ", "");
+			text += " ";
 			div.appendChild(document.createTextNode(text));
 			var produceButton = document.createElement("a");
 			produceButton.innerHTML = "-\>"; //TODO
 			produceButton.title = LAN.get("produce");
 			div.appendChild(produceButton);
 			produceButtons[i] = produceButton;
-			div.appendChild(document.createTextNode(product.value + "\u00A0" + LAN.get(product.name)));
+			div.appendChild(document.createTextNode(" " + product.value + "\u00A0" + LAN.get(product.name)));
 			div.appendChild(document.createElement("br"));
 		}
 		
