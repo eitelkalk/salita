@@ -81,7 +81,7 @@
 		this.spouse.children.push(child);
 		child.parents.push(this);
 		child.parents.push(this.spouse);
-		this.family.push(child);
+		this.family.addPerson(child);
 		return child;
 	}
 	
